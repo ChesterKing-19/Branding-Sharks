@@ -1,41 +1,58 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const GALLERY_ITEMS = [
   "nova", "vanta", "aura", "north", "forge",
-  "video", "kin", "reel", "orbit", "lumen",
+  "video", "kin", "orbit", "lumen",
   "drift", "pulse", "tide", "echo", "flux", "current",
 ];
 
 export function Gallery() {
   const galleryPin = useRef<HTMLElement>(null);
-  const [galleryProgress, setGalleryProgress] = useState(0);
+  const stage = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = galleryPin.current;
-    if (!el) return;
+    const node = stage.current;
+    if (!el || !node) return;
 
+    let raf = 0;
+    const measureSlot = () => {
+      const slot = node.querySelector<HTMLElement>(".se-video-slot");
+      const w = slot ? slot.offsetWidth : 0;
+      const h = slot ? slot.offsetHeight : 0;
+      node.style.setProperty("--reel-final-w", w ? `${w}px` : "13.6vw");
+      node.style.setProperty("--reel-final-h", h ? `${h}px` : "31vw");
+    };
     const update = () => {
+      raf = 0;
       const box = el.getBoundingClientRect();
       const distance = el.offsetHeight - window.innerHeight;
-      setGalleryProgress(
-        Math.min(1, Math.max(0, -box.top / Math.max(distance, 1)))
-      );
+      const base = Math.min(1, Math.max(0, -box.top / Math.max(distance, 1)));
+      const p = 1 - Math.pow(1 - base, 1.8);
+      node.style.setProperty("--gallery-progress", String(p));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
     };
 
+    measureSlot();
     update();
-    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", measureSlot);
     window.addEventListener("resize", update);
     return () => {
-      window.removeEventListener("scroll", update);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", measureSlot);
       window.removeEventListener("resize", update);
+      if (raf) cancelAnimationFrame(raf);
     };
   }, []);
 
   return (
     <section className="see-work" ref={galleryPin} aria-label="Selected Branding Sharks work">
-      <div className="see-work-stage" style={{ "--gallery-progress": galleryProgress } as React.CSSProperties}>
+      <div className="see-work-stage" ref={stage}>
         <p className="sr-only">Selected work</p>
 
         <div className="see-work-gallery">
@@ -78,7 +95,7 @@ export function Gallery() {
             loop
             playsInline
             preload="metadata"
-            src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+            src="/reel-test.mp4"
           />
         </div>
 
