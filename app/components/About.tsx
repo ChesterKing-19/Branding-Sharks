@@ -1,7 +1,6 @@
 "use client";
 
 import { Arrow } from "./Arrow";
-import { Count } from "./Count";
 
 export function About() {
   return (
@@ -26,23 +25,6 @@ export function About() {
         </div>
       </section>
 
-      <section className="stats section">
-        <p className="eyebrow">A few sharp numbers</p>
-        <div>
-          {([
-            ["150+", "Brands worked with"],
-            ["32M+", "People reached"],
-            ["4.8×", "Average ROAS"],
-            ["68%", "Average engagement growth"],
-          ] as const).map(([n, l]) => (
-            <article key={n}>
-              <Count value={n} />
-              <p>{l}</p>
-              <i />
-            </article>
-          ))}
-        </div>
-      </section>
     </>
   );
 }

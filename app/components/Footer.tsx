@@ -10,7 +10,6 @@ export function Footer() {
           <a href="#work">Work</a>
           <a href="#services">Services</a>
           <a href="#about">About</a>
-          <a href="#insights">Insights</a>
         </div>
         <div>
           <p>Capabilities</p>

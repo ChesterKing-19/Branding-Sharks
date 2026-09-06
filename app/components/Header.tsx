@@ -26,7 +26,6 @@ export function Header() {
             Services <small>10</small>
           </button>
           <a href="#about">About</a>
-          <a href="#insights">Insights</a>
           <a href="#contact">Contact</a>
         </nav>
         <a className="pill dark-pill" href="#contact">
