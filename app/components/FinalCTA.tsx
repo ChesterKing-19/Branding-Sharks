@@ -17,13 +17,12 @@ export function FinalCTA() {
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2.5"
+          strokeWidth="3"
           strokeLinecap="butt"
           strokeLinejoin="miter"
         >
-          <path d="M7 17 17 7" />
-          <path d="M17 7H8" />
-          <path d="M17 7v9" />
+          <path d="M7 20 20 7" />
+          <path d="M12 7h8v8" />
         </svg>
       </span>
     </section>
