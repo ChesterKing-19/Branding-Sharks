@@ -95,7 +95,7 @@ export function Gallery() {
             loop
             playsInline
             preload="metadata"
-            src="/reel-test.mp4"
+            src="/assets/videos/reel-test.mp4"
           />
         </div>
 
