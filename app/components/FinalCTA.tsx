@@ -12,7 +12,20 @@ export function FinalCTA() {
           START A<br />PROJECT <Arrow />
         </a>
       </div>
-      <span className="giant-arrow">↗</span>
+      <span className="giant-arrow" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="butt"
+          strokeLinejoin="miter"
+        >
+          <path d="M7 17 17 7" />
+          <path d="M17 7H8" />
+          <path d="M17 7v9" />
+        </svg>
+      </span>
     </section>
   );
 }
