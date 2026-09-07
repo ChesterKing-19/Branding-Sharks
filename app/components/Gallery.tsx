@@ -70,18 +70,10 @@ export function Gallery() {
                 key={item}
                 style={{ "--tile": i } as React.CSSProperties}
               >
-                {item === "reel" ? (
-                  <div className="video-placeholder">
-                    <i>▶</i>
-                    <span>CAMPAIGN FILM<br />VIDEO PLACEHOLDER</span>
-                    <small>Replace with video</small>
-                  </div>
-                ) : (
-                  <>
-                    <span>0{i + 1} / {item.toUpperCase()}</span>
-                    <b>{item.toUpperCase()}</b>
-                  </>
-                )}
+                <>
+                  <span>{String(i + 1).padStart(2, "0")} / {item.toUpperCase()}</span>
+                  <b>{item.toUpperCase()}</b>
+                </>
               </article>
             )
           )}
@@ -96,6 +88,7 @@ export function Gallery() {
             playsInline
             preload="metadata"
             src="/assets/videos/reel-test.mp4"
+            aria-label="Branding Sharks campaign showreel"
           />
         </div>
 

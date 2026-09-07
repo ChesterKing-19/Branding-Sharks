@@ -25,6 +25,7 @@ export function Header() {
           className="hamburger"
           onClick={() => setMenu(!menu)}
           aria-label="Toggle menu"
+          aria-expanded={menu}
         >
           {menu ? "×" : "☰"}
         </button>

@@ -21,13 +21,14 @@ export function Footer() {
         <div>
           <p>Get in touch</p>
           <a href="mailto:hello@brandingsharks.com">hello@brandingsharks.com</a>
-          <a href="#">Instagram</a>
-          <a href="#">LinkedIn</a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         </div>
       </div>
       <div className="legal">
         <span>© 2026 Branding Sharks</span>
-        <span>Privacy &nbsp; Terms</span>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
       </div>
     </footer>
   );
