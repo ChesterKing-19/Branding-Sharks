@@ -262,6 +262,13 @@ h2 {
   font-size: 14px;
 }
 
+/* --- services stage --- */
+.services-stage {
+  height: 600px;
+  position: relative;
+  margin-top: 55px;
+}
+
 /* --- intro / about --- */
 .intro {
   display: grid;
@@ -339,97 +346,6 @@ h2 {
   to {
     transform: translateX(-35%);
   }
-}
-
-/* --- services --- */
-.service-list {
-  margin-top: 55px;
-  border-top: 1px solid var(--line);
-}
-
-.service {
-  width: 100%;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  background: #fff;
-  display: grid;
-  grid-template-columns: 70px 1fr auto;
-  align-items: center;
-  text-align: left;
-  padding: 21px 0;
-  transition: 0.35s;
-  position: relative;
-}
-
-.service > span {
-  font: 11px var(--font-dm-mono);
-  color: var(--green);
-}
-
-.service strong {
-  font-size: clamp(1.5rem, 3vw, 3.2rem);
-  letter-spacing: -0.06em;
-}
-
-.service > .arrow {
-  font-size: 28px;
-}
-
-.service-expand {
-  grid-column: 2 / 4;
-  display: grid;
-  grid-template-columns: 1fr 200px;
-  gap: 35px;
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: 0.4s;
-}
-
-.service-expand p {
-  font-size: 13px;
-  line-height: 1.55;
-  max-width: 360px;
-}
-
-.mini-visual {
-  height: 120px;
-  background: var(--lime);
-  clip-path: polygon(0 0, 100% 0, 84% 100%, 13% 100%);
-}
-
-.visual-1 {
-  background: repeating-linear-gradient(45deg, var(--green), var(--green) 12px, #d5e5ae 12px, #d5e5ae 24px);
-}
-
-.visual-2 {
-  border-radius: 50%;
-  background: radial-gradient(circle, #fff 0 14%, var(--lime) 15% 29%, var(--green) 30%);
-}
-
-.visual-3 {
-  background: linear-gradient(135deg, var(--ink) 49%, var(--lime) 50%);
-}
-
-.visual-4 {
-  background: linear-gradient(90deg, var(--green) 50%, var(--lime) 50%);
-}
-
-.service:hover,
-.service.active {
-  background: var(--paper);
-  padding: 26px 18px;
-}
-
-.service.active .service-expand,
-.service:hover .service-expand {
-  max-height: 150px;
-  opacity: 1;
-}
-
-.service.active > span,
-.service:hover > span {
-  color: var(--lime);
 }
 
 /* --- work --- */
@@ -773,18 +689,10 @@ footer {
     grid-template-columns: 1fr;
   }
 
-  .service {
-    grid-template-columns: 40px 1fr auto;
-  }
-
-  .service-expand {
-    grid-template-columns: 1fr;
-    grid-column: 1 / -1;
-    padding-left: 40px;
-  }
-
-  .mini-visual {
-    display: none;
+  .services-stage {
+    height: calc(100vh - 260px);
+    height: calc(100svh - 260px);
+    min-height: 480px;
   }
 
   .work {
