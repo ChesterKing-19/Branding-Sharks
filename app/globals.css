@@ -240,26 +240,14 @@ h2 {
   padding-bottom: 4px;
 }
 
-.section-top {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 40px;
-  align-items: flex-end;
-}
-
-.section-top .eyebrow {
-  grid-column: 1 / -1;
-}
-
-.section-top h2 {
+.services-head {
   margin: 0;
+  text-align: left;
 }
 
-.section-top > p:last-child {
-  max-width: 320px;
-  line-height: 1.5;
-  color: var(--grey);
-  font-size: 14px;
+.services-head h2 {
+  margin: 0;
+  max-width: none;
 }
 
 /* --- services stage --- */
@@ -683,10 +671,6 @@ footer {
 
   .intro-image {
     min-height: 390px;
-  }
-
-  .section-top {
-    grid-template-columns: 1fr;
   }
 
   .services-stage {

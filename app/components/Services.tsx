@@ -1,6 +1,7 @@
 "use client";
 
 import InfiniteMenu from "./InfiniteMenu";
+import SplitFlapText from "./SplitFlapText";
 
 const IMAGES = [
   "https://images.unsplash.com/photo-1782977389500-dd7adad33ebe?q=80&w=600&h=600&fit=crop&sat=-100&auto=format",
@@ -33,10 +34,35 @@ const ITEMS = SERVICES.map(([title, description, shortDescription], i) => ({
 export function Services() {
   return (
     <section className="services section" id="services">
-      <div className="section-top">
-        <p className="eyebrow">Our capability set</p>
-        <h2>WHAT WE <em>DO.</em></h2>
-        <p>From positioning to performance, we build the systems that make brands grow.</p>
+      <div className="services-head">
+        <h2>
+          <SplitFlapText
+            words={[
+              "WHAT WE DO.",
+              "BRANDING",
+              "CREATIVE",
+              "PERFORMANCE",
+              "SOCIAL MEDIA",
+              "CONTENT",
+              "WEB DESIGN",
+            ]}
+            flipDuration={0.12}
+            stagger={0.06}
+            cycleDelay={2400}
+            charset="alphanumeric"
+            flipsPerChar={8}
+            tileColor="#111827"
+            textColor="#f8fafc"
+            tileRadius={8}
+            gap={6}
+            fontSize="clamp(1.5rem, 5.2vw, 5rem)"
+            loop
+            padTo={12}
+            startOnView
+            highlight={{ phrase: "WHAT WE DO.", from: 8, to: 10 }}
+            highlightColor="#9dc83a"
+          />
+        </h2>
       </div>
       <div className="services-stage">
         <InfiniteMenu items={ITEMS} scale={0.8} backgroundColor="#fff" />
