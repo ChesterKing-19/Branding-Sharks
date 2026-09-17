@@ -143,9 +143,13 @@ const SplitFlapText = ({
 
   const normalizedPhrases = useMemo(() => phrases.map(phrase => normalizePhrase(phrase, width)), [phrases, width]);
 
-  const [tiles, setTiles] = useState<TileState[]>(() => createTiles(normalizedPhrases[0] || ''));
+  const [tiles, setTiles] = useState<TileState[]>(() =>
+    createTiles(startOnView ? ' '.repeat(width) : normalizedPhrases[0] || '')
+  );
   const [started, setStarted] = useState(!startOnView);
-  const [activePhrase, setActivePhrase] = useState((normalizedPhrases[0] || '').trimEnd());
+  const [activePhrase, setActivePhrase] = useState(
+    startOnView ? '' : (normalizedPhrases[0] || '').trimEnd()
+  );
 
   useEffect(() => {
     if (!startOnView || started) return;
@@ -188,13 +192,6 @@ const SplitFlapText = ({
     clearAnimation();
 
     const firstPhrase = normalizedPhrases[0] || '';
-    currentTextRef.current = firstPhrase;
-    setTiles(createTiles(firstPhrase));
-    setActivePhrase(firstPhrase.trimEnd());
-
-    if (normalizedPhrases.length <= 1 || typeof window === 'undefined') {
-      return clearAnimation;
-    }
 
     let phraseIndex = 0;
     let cancelled = false;
@@ -333,13 +330,24 @@ const SplitFlapText = ({
       }, delay);
     };
 
-    scheduleNext(safeCycleDelay);
+    const introFlip = startOnView;
+    const initialPhrase = introFlip ? ' '.repeat(width) : firstPhrase;
+
+    currentTextRef.current = initialPhrase;
+    setTiles(createTiles(initialPhrase));
+    setActivePhrase(introFlip ? '' : firstPhrase.trimEnd());
+
+    const introDuration = introFlip ? animateTo(firstPhrase) : 0;
+
+    if (normalizedPhrases.length > 1 && typeof window !== 'undefined') {
+      scheduleNext(introDuration + safeCycleDelay);
+    }
 
     return () => {
       cancelled = true;
       clearAnimation();
     };
-  }, [started, normalizedPhrases, width, loop, cycleDelay, flipDuration, stagger, flipsPerChar, charset, prefersReducedMotion]);
+  }, [started, startOnView, normalizedPhrases, width, loop, cycleDelay, flipDuration, stagger, flipsPerChar, charset, prefersReducedMotion]);
 
   const settledText = tiles
     .map(tile => tile.current)
