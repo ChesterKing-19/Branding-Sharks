@@ -32,7 +32,6 @@ export function Services() {
             className={`service${active === i ? " active" : ""}`}
             key={num}
             onMouseEnter={() => setActive(i)}
-            onFocus={() => setActive(i)}
             onClick={() => setActive(active === i ? null : i)}
           >
             <span>{num}</span>

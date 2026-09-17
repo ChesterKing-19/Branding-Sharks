@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const GALLERY_ITEMS = [
   "nova", "vanta", "aura", "north", "forge",
@@ -11,6 +11,27 @@ const GALLERY_ITEMS = [
 export function Gallery() {
   const galleryPin = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoError, setVideoError] = useState(false);
+
+  useEffect(() => {
+    const reel = stage.current?.querySelector<HTMLElement>(".reel-focus");
+    const video = videoRef.current;
+    if (!reel || !video || !("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(reel);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const el = galleryPin.current;
@@ -80,16 +101,24 @@ export function Gallery() {
         </div>
 
         <div className="reel-focus" aria-label="Brand film">
-          <video
-            className="reel-video"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            src="/assets/videos/reel-test.mp4"
-            aria-label="Branding Sharks campaign showreel"
-          />
+          {videoError ? (
+            <div className="reel-video reel-video--fallback">
+              <span>REEL UNAVAILABLE</span>
+            </div>
+          ) : (
+            <video
+              ref={videoRef}
+              className="reel-video"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              src="/assets/videos/reel-test.mp4"
+              onError={() => setVideoError(true)}
+              aria-label="Branding Sharks campaign showreel"
+            />
+          )}
         </div>
 
         <div className="gallery-scroll-label">SCROLL TO EXPLORE ↓</div>

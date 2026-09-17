@@ -1,3 +1,5 @@
+"use client";
+
 export function Footer() {
   return (
     <footer>
@@ -27,8 +29,8 @@ export function Footer() {
       </div>
       <div className="legal">
         <span>© 2026 Branding Sharks</span>
-        <a href="/privacy">Privacy</a>
-        <a href="/terms">Terms</a>
+        <span>Privacy</span>
+        <span>Terms</span>
       </div>
     </footer>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 export function Testimonial() {
   return (
     <section className="quote">

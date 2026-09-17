@@ -10,12 +10,18 @@ const headlineLines = [
   { text: "GET NOTICED.", className: "hero-line hero-line-three" },
 ];
 
+const HERO_COLORS = ["#618A15", "#618A15", "#9DC83A"];
+
 export function Hero() {
   const heroRef = useRef<HTMLElement>(null);
   const [heroInView, setHeroInView] = useState(true);
-  const [reduceMotion, setReduceMotion] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && typeof window.matchMedia === "function") {
+      setReduceMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    }
+  }, []);
 
   useEffect(() => {
     const hero = heroRef.current;
@@ -30,7 +36,7 @@ export function Hero() {
 
   useEffect(() => {
     const hero = heroRef.current;
-    if (!hero || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!hero || reduceMotion) return;
 
     let visible = true;
     let frame = 0;
@@ -68,13 +74,13 @@ export function Hero() {
       observer?.disconnect();
       window.removeEventListener("scroll", updateScroll);
     };
-  }, []);
+  }, [reduceMotion]);
 
   return (
     <section id="top" ref={heroRef} className="ocean-hero" aria-labelledby="hero-title">
       <Ferrofluid
         className="hero-ferrofluid"
-        colors={["#618A15", "#618A15", "#9DC83A"]}
+        colors={HERO_COLORS}
         speed={0.2}
         scale={1.4}
         turbulence={0.6}

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import type { CSSProperties, FC } from "react";
 import { Renderer, Program, Mesh, Triangle } from "ogl";
 import "./Ferrofluid.css";
 
@@ -31,7 +32,15 @@ type RGB = [number, number, number];
 const MAX_COLORS = 8;
 
 const hexToRGB = (hex: string): RGB => {
-  const c = hex.replace("#", "").padEnd(6, "0");
+  const raw = hex.replace("#", "").trim();
+  const full =
+    raw.length === 3
+      ? raw
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : raw;
+  const c = full.padEnd(6, "0");
   const r = parseInt(c.slice(0, 2), 16) / 255;
   const g = parseInt(c.slice(2, 4), 16) / 255;
   const b = parseInt(c.slice(4, 6), 16) / 255;
@@ -43,16 +52,7 @@ const prepColors = (input?: string[]) => {
   const count = base.length;
   const arr: RGB[] = [];
   for (let i = 0; i < MAX_COLORS; i++) arr.push(hexToRGB(base[Math.min(i, base.length - 1)]));
-  const avg: RGB = [0, 0, 0];
-  for (let i = 0; i < count; i++) {
-    avg[0] += arr[i][0];
-    avg[1] += arr[i][1];
-    avg[2] += arr[i][2];
-  }
-  avg[0] /= count;
-  avg[1] /= count;
-  avg[2] /= count;
-  return { arr, count, avg };
+  return { arr, count };
 };
 
 const flowVec = (d?: string): [number, number] => {
@@ -97,7 +97,6 @@ uniform vec3  uColor6;
 uniform vec3  uColor7;
 uniform int   uColorCount;
 
-uniform vec3  uMouseColor;
 uniform vec2  uFlow;
 uniform float uSpeed;
 uniform float uScale;
@@ -213,7 +212,7 @@ void main() {
 }
 `;
 
-const Ferrofluid: React.FC<FerrofluidProps> = ({
+const Ferrofluid: FC<FerrofluidProps> = ({
   className,
   dpr,
   paused = false,
@@ -263,7 +262,7 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
     canvas.style.display = "block";
     container.appendChild(canvas);
 
-    const { arr, count, avg } = prepColors(colors);
+    const { arr, count } = prepColors(colors);
 
     const uniforms = {
       iResolution: { value: [gl.drawingBufferWidth, gl.drawingBufferHeight, 1] },
@@ -278,7 +277,6 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
       uColor6: { value: arr[6] },
       uColor7: { value: arr[7] },
       uColorCount: { value: count },
-      uMouseColor: { value: avg },
       uFlow: { value: flowVec(flowDirection) },
       uSpeed: { value: speed },
       uScale: { value: scale },
@@ -326,10 +324,15 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
       canvas.addEventListener("pointermove", onPointerMove);
     }
 
+    const onContextLost = (event: Event) => event.preventDefault();
+    canvas.addEventListener("webglcontextlost", onContextLost);
+
     const loop: FrameRequestCallback = (t) => {
       uniforms.iTime.value = t * 0.001;
       if (!pausedRef.current) {
         rafRef.current = requestAnimationFrame(loop);
+      } else {
+        rafRef.current = null;
       }
       if (mouseDampening > 0) {
         if (!lastTimeRef.current) lastTimeRef.current = t;
@@ -348,8 +351,8 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
       if (programRef.current && meshRef.current) {
         try {
           renderer.render({ scene: meshRef.current });
-        } catch (e) {
-          console.error(e);
+        } catch {
+          console.error("Ferrofluid: WebGL render failed");
         }
       }
     };
@@ -361,6 +364,7 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
       rafRef.current = null;
       loopRef.current = null;
       if (mouseInteraction) canvas.removeEventListener("pointermove", onPointerMove);
+      canvas.removeEventListener("webglcontextlost", onContextLost);
       ro.disconnect();
       if (canvas.parentElement === container) {
         container.removeChild(canvas);
@@ -411,7 +415,7 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
       ref={containerRef}
       className={`ferrofluid-container ${className ?? ""}`}
       style={{
-        ...(mixBlendMode && { mixBlendMode: mixBlendMode as React.CSSProperties["mixBlendMode"] })
+        ...(mixBlendMode && { mixBlendMode: mixBlendMode as CSSProperties["mixBlendMode"] })
       }}
     />
   );

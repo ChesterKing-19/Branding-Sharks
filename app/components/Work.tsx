@@ -11,6 +11,8 @@ const PROJECTS = [
   { name: "FORGE", type: "Digital + performance", result: "+117% conversion rate", shade: "forge" },
 ];
 
+const RAIL_TILE_FACTOR = 0.76;
+
 interface WorkProps {
   activeProject: number;
   onActiveProjectChange: (i: number) => void;
@@ -40,7 +42,7 @@ export function Work({ activeProject, onActiveProjectChange }: WorkProps) {
     onActiveProjectChange(
       Math.min(
         PROJECTS.length - 1,
-        Math.max(0, Math.round(el.scrollLeft / (w * 0.76)))
+        Math.max(0, Math.round(el.scrollLeft / (w * RAIL_TILE_FACTOR)))
       )
     );
   }, [onActiveProjectChange]);
@@ -77,7 +79,7 @@ export function Work({ activeProject, onActiveProjectChange }: WorkProps) {
           style={{ "--rail-progress": workProgress } as React.CSSProperties}
         >
           {PROJECTS.map((p, i) => (
-            <a className={`project ${p.shade}`} href="#case-study" key={p.name}>
+            <a className={`project ${p.shade}`} href="#work" key={p.name}>
               <div className="project-art">
                 <span>{String(i + 1).padStart(2, "0")}</span>
                 <div className="project-mark">{p.name}</div>
