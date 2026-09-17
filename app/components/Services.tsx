@@ -37,6 +37,7 @@ export function Services() {
       <div className="services-head">
         <h2>
           <SplitFlapText
+            className="services-flap"
             words={[
               "WHAT WE DO.",
               "BRANDING",

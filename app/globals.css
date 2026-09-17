@@ -664,6 +664,11 @@ footer {
     padding: 82px 22px;
   }
 
+  .services-head {
+    margin: 0 -22px;
+    padding: 0 8px;
+  }
+
   .intro {
     grid-template-columns: 1fr;
     gap: 45px;

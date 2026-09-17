@@ -172,3 +172,16 @@
     animation: none !important;
   }
 }
+
+@media (max-width: 800px) {
+  .split-flap-text.services-flap {
+    font-size: clamp(2rem, calc((100vw - 56px) / 7.44), 2.75rem);
+    gap: 3px;
+    letter-spacing: 0;
+  }
+
+  .split-flap-text.services-flap .split-flap-text__tile {
+    width: 0.62em;
+    border-radius: 6px;
+  }
+}
