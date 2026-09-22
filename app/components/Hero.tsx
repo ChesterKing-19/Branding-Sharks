@@ -10,7 +10,7 @@ const headlineLines = [
   { text: "GET NOTICED.", className: "hero-line hero-line-three" },
 ];
 
-const HERO_COLORS = ["#618A15", "#618A15", "#9DC83A"];
+const HERO_COLORS = ["#8EAD10", "#6B870D", "#A8C814"];
 
 export function Hero() {
   const heroRef = useRef<HTMLElement>(null);

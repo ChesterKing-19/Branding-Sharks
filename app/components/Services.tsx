@@ -40,12 +40,6 @@ export function Services() {
             className="services-flap"
             words={[
               "WHAT WE DO.",
-              "BRANDING",
-              "CREATIVE",
-              "PERFORMANCE",
-              "SOCIAL MEDIA",
-              "CONTENT",
-              "WEB DESIGN",
             ]}
             flipDuration={0.12}
             stagger={0.06}
@@ -61,7 +55,7 @@ export function Services() {
             padTo={12}
             startOnView
             highlight={{ phrase: "WHAT WE DO.", from: 8, to: 10 }}
-            highlightColor="#9dc83a"
+            highlightColor="#a8c814"
           />
         </h2>
       </div>

@@ -86,6 +86,12 @@ const buildSequence = (target: string, flips: number, charset: string) => {
   return steps;
 };
 
+const buildScramble = (width: number, charset: string) => {
+  let out = '';
+  for (let i = 0; i < width; i += 1) out += sampleChar(charset);
+  return out;
+};
+
 const usePrefersReducedMotion = () => {
   const [prefersReduced, setPrefersReduced] = useState(false);
 
@@ -121,7 +127,7 @@ const SplitFlapText = ({
   padTo = 12,
   startOnView = false,
   highlight,
-  highlightColor = '#9dc83a',
+  highlightColor = '#a8c814',
   className = '',
   style = {},
   ...props
@@ -316,17 +322,33 @@ const SplitFlapText = ({
       return totalDuration;
     };
 
+    const singleLoop = normalizedPhrases.length === 1 && loop;
+
     const scheduleNext = (delay: number) => {
       cycleTimerRef.current = window.setTimeout(() => {
         if (cancelled) return;
 
-        const nextIndex = phraseIndex + 1;
+        let duration = 0;
+        let holdMs = safeCycleDelay;
 
-        if (nextIndex >= normalizedPhrases.length && !loop) return;
+        if (singleLoop) {
+          if (currentTextRef.current === firstPhrase) {
+            currentTextRef.current = buildScramble(width, activeCharset);
+            setTiles(createTiles(currentTextRef.current));
+          }
 
-        phraseIndex = nextIndex % normalizedPhrases.length;
-        const animationDuration = animateTo(normalizedPhrases[phraseIndex]);
-        scheduleNext(safeCycleDelay + animationDuration);
+          duration = animateTo(firstPhrase);
+          holdMs = safeCycleDelay;
+        } else {
+          const nextIndex = phraseIndex + 1;
+
+          if (nextIndex >= normalizedPhrases.length && !loop) return;
+
+          phraseIndex = nextIndex % normalizedPhrases.length;
+          duration = animateTo(normalizedPhrases[phraseIndex]);
+        }
+
+        scheduleNext(holdMs + duration);
       }, delay);
     };
 
@@ -339,7 +361,7 @@ const SplitFlapText = ({
 
     const introDuration = introFlip ? animateTo(firstPhrase) : 0;
 
-    if (normalizedPhrases.length > 1 && typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && (normalizedPhrases.length > 1 || loop)) {
       scheduleNext(introDuration + safeCycleDelay);
     }
 
