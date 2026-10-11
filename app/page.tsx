@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { Header } from "./components/Header";
 import { LiquidHeader } from "./components/navigationBar/LiquidHeader";
 import { Hero } from "./components/Hero";
@@ -14,9 +13,6 @@ import { Footer } from "./components/Footer";
 import ScrollToTopButton from "./components/ScrollToTopButton";
 
 export default function Home() {
-  const [activeProject, setActiveProject] = useState(0);
-  const handleActiveProjectChange = useCallback((i: number) => setActiveProject(i), []);
-
   return (
     <main>
       <LiquidHeader />
@@ -26,7 +22,7 @@ export default function Home() {
 
       <About />
       <Services />
-      <Work activeProject={activeProject} onActiveProjectChange={handleActiveProjectChange} />
+      <Work />
       <Testimonial />
       <FinalCTA />
       <Footer />
