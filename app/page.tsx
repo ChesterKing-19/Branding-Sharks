@@ -11,6 +11,7 @@ import { Work } from "./components/Work";
 import { Testimonial } from "./components/Testimonial";
 import { FinalCTA } from "./components/FinalCTA";
 import { Footer } from "./components/Footer";
+import ScrollToTopButton from "./components/ScrollToTopButton";
 
 export default function Home() {
   const [activeProject, setActiveProject] = useState(0);
@@ -29,6 +30,7 @@ export default function Home() {
       <Testimonial />
       <FinalCTA />
       <Footer />
+      <ScrollToTopButton />
     </main>
   );
 }
