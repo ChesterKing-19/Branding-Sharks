@@ -254,6 +254,10 @@ h2 {
 }
 
 /* --- services stage --- */
+.services {
+  background: #000;
+}
+
 .services-stage {
   height: 600px;
   position: relative;
