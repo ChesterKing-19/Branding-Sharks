@@ -415,7 +415,7 @@ const InfiniteMenu = ({
       const request = ++atlas.request;
       const total = Math.max(1, list.length);
       atlas.cells = Math.ceil(Math.sqrt(total));
-      atlas.cell = clamp(Math.floor(4096 / atlas.cells), 64, 512);
+      atlas.cell = clamp(Math.floor(4096 / atlas.cells), 64, 256);
       atlas.canvas.width = atlas.cells * atlas.cell;
       atlas.canvas.height = atlas.cells * atlas.cell;
       const ctx = atlas.canvas.getContext('2d');
@@ -664,7 +664,7 @@ const InfiniteMenu = ({
       if (busy) raf = requestAnimationFrame(frame);
       else {
         last = 0;
-        if (s.autoplay > 0 && !state.hovered && !state.focused && !reduce) {
+        if (s.autoplay > 0 && visible && !state.hovered && !state.focused && !reduce) {
           clearTimeout(timer);
           timer = window.setTimeout(wake, Math.max(16, (s.autoplay - state.idle) * 1000));
         }

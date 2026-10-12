@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import DecryptedText from "../effects/DecryptedText";
-import Ferrofluid from "../effects/Ferrofluid";
+
+const Ferrofluid = dynamic(() => import("../effects/Ferrofluid"), {
+  ssr: false,
+});
 
 const headlineLines = [
   { text: "WE BUILD", className: "hero-line hero-line-one" },

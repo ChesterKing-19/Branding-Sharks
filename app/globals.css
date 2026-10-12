@@ -73,6 +73,12 @@ h2 em {
   box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.35);
 }
 
+.pill:active,
+.cta-circle:active,
+.hero-button--primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
 .dark-pill {
   position: relative;
   isolation: isolate;
@@ -140,7 +146,7 @@ h2 em {
 }
 
 .eyebrow {
-  color: var(--green);
+  color: var(--green-deep);
 }
 
 h2 {
@@ -248,7 +254,7 @@ h2 {
   font-size: clamp(1.7rem, 3.5vw, 4rem);
   letter-spacing: -0.07em;
   white-space: nowrap;
-  color: #c7cbcd;
+  color: #9aa0a2;
   animation: marquee 32s linear infinite;
 }
 
@@ -259,7 +265,7 @@ h2 {
 
 @keyframes marquee {
   to {
-    transform: translateX(-35%);
+    transform: translateX(-50%);
   }
 }
 
@@ -315,7 +321,7 @@ h2 {
 }
 
 .quote .eyebrow {
-  color: var(--green);
+  color: var(--green-deep);
 }
 
 .quote blockquote {
@@ -331,11 +337,11 @@ h2 {
   font-size: 12px;
   display: flex;
   gap: 25px;
-  color: var(--grey);
+  color: #5f6363;
 }
 
 .quote div span:last-child {
-  color: var(--green);
+  color: var(--green-deep);
 }
 
 /* --- final CTA --- */
@@ -430,7 +436,7 @@ button:focus-visible {
   .services-stage {
     height: calc(100vh - 260px);
     height: calc(100svh - 260px);
-    min-height: 480px;
+    min-height: 400px;
   }
 
   .work {
@@ -447,7 +453,7 @@ button:focus-visible {
   }
 
   .work-carousel {
-    height: clamp(620px, 82vh, 800px);
+    height: clamp(520px, 82vh, 800px);
   }
 
   .quote {
@@ -457,6 +463,10 @@ button:focus-visible {
   .final-cta {
     min-height: 700px;
     padding: 80px 22px;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(3.4rem, 17vw, 5rem);
   }
 
   .giant-arrow {
@@ -743,6 +753,7 @@ button:focus-visible {
     color: #fff;
     font: 10px var(--font-dm-mono);
     letter-spacing: 1px;
+    pointer-events: none;
     opacity: calc(1 - var(--gallery-progress) * 3);
   }
 
@@ -858,9 +869,10 @@ button:focus-visible {
     bottom: 5vh;
     left: 50%;
     transform: translateX(-50%);
-    font: 8px var(--font-dm-mono);
+    font: 11px var(--font-dm-mono);
     color: #fff;
     white-space: nowrap;
+    pointer-events: none;
     opacity: calc(1 - var(--gallery-progress) * 3);
   }
 
@@ -930,7 +942,9 @@ button:focus-visible {
   left: 50% !important;
   top: 50% !important;
   width: calc(var(--reel-final-w, 13.6vw) + (100vw - var(--reel-final-w, 13.6vw)) * (1 - var(--gallery-progress, 0))) !important;
+  width: calc(var(--reel-final-w, 13.6vw) + (100dvw - var(--reel-final-w, 13.6vw)) * (1 - var(--gallery-progress, 0))) !important;
   height: calc(var(--reel-final-h, 31vw) + (100vh - var(--reel-final-h, 31vw)) * (1 - var(--gallery-progress, 0))) !important;
+  height: calc(var(--reel-final-h, 31vw) + (100dvh - var(--reel-final-h, 31vw)) * (1 - var(--gallery-progress, 0))) !important;
   transform: translate(-50%, -50%) !important;
   transform-origin: 50% 50% !important;
   opacity: 1 !important;
@@ -1102,7 +1116,7 @@ button:focus-visible {
 
 .hero-description {
   margin: 0;
-  color: rgba(248, 250, 248, 0.58);
+  color: rgba(248, 250, 248, 0.78);
   font-size: 14px;
   line-height: 1.55;
 }
@@ -1118,6 +1132,7 @@ button:focus-visible {
 .hero-button {
   transition:
     color 0.2s ease,
+    background-color 0.2s ease,
     border-color 0.2s ease;
 }
 
@@ -1137,6 +1152,11 @@ button:focus-visible {
 
 .hero-button--quiet {
   color: rgba(248, 250, 248, 0.6);
+  padding: 12px 4px;
+}
+
+.hero-button--quiet:hover {
+  color: rgba(248, 250, 248, 0.95);
 }
 
 .hero-scroll,
@@ -1144,7 +1164,7 @@ button:focus-visible {
   position: absolute;
   bottom: 34px;
   z-index: 2;
-  color: rgba(248, 250, 248, 0.4);
+  color: rgba(248, 250, 248, 0.6);
   font: 9px var(--font-dm-mono), monospace;
   letter-spacing: 0.17em;
 }
@@ -1182,6 +1202,10 @@ button:focus-visible {
     line-height: 0.88;
   }
 
+  .hero-line-three {
+    white-space: normal;
+  }
+
   .hero-bottom {
     display: block;
     margin-top: 34px;
@@ -1209,7 +1233,7 @@ button:focus-visible {
   .hero-coordinate {
     right: 22px;
     bottom: 24px;
-    font-size: 8px;
+    font-size: 11px;
   }
 }
 
@@ -1243,6 +1267,13 @@ button:focus-visible {
   .scroll-to-top {
     bottom: calc(clamp(20px, 10vh, 100px) + env(safe-area-inset-bottom));
   }
+}
+
+/* Park the floating button while the mobile menu is open. */
+body.menu-open .scroll-to-top {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

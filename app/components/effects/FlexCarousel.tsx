@@ -242,7 +242,7 @@ const BEND_PRESETS: Record<BendPreset, PresetValues> = {
 };
 
 const FIT_ASPECT: Record<string, number> = { portrait: 0.75, square: 1, landscape: 4 / 3 };
-const TAPS = 12;
+  const TAPS = 6;
 const PIXEL_BUDGET = 4.5e6;
 const INTRO_DURATION: Record<string, number> = { rise: 2.1, bloom: 1.6, spin: 2.2, deal: 1.5, fade: 0.35 };
 
@@ -949,7 +949,10 @@ const FlexCarousel = ({
         callbacksRef.current.onChange?.(current, itemsRef.current[current]);
       }
 
-      if (focus.pending >= 0 && mode === 'spring' && Math.abs(goal - pos) < 1.5 && Math.abs(vel) < 30) {
+      // Open a tapped card only once it has truly settled at center.
+      // A loose gate opens mid-glide: the overlay then morphs from a moving
+      // origin on a faster clock than the snap spring and parks off-center.
+      if (focus.pending >= 0 && mode === 'spring' && Math.abs(goal - pos) < 0.5 && Math.abs(vel) < 5) {
         if (current === focus.pending) openFocus(current);
         else focus.pending = -1;
       }

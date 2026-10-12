@@ -21,6 +21,12 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",
+  experimental: {
+    optimizePackageImports: ["motion", "three", "ogl"],
+  },
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
   async headers() {
     return [
       {

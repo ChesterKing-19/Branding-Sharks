@@ -194,6 +194,13 @@ export function FlexCarouselReel({ item, engineRef, hostRef, onClose }: FlexCaro
       const oy = host ? host.top : 0;
       const t = focus.amount;
       const c = focus.rect;
+      // Passive settle observation (diagnostics only — gates nothing).
+      // The engine already requires true settle before opening, so the
+      // card is stationary when we mount; the morph below just tracks it.
+      if (DEV && !positioned && focus.amount > 0.9) {
+        positioned = true;
+        console.info(`[reel] first positioned frame: ${item.title ?? item.videoSrc}`);
+      }
       // Morph origin in viewport space (fixes off-screen start on scrolled pages).
       const sx = c.x + ox;
       const sy = c.y + oy;
@@ -205,10 +212,6 @@ export function FlexCarouselReel({ item, engineRef, hostRef, onClose }: FlexCaro
       const clamped = clampToView(lerp(sx - c.w / 2, tx, t), lerp(sy - c.h / 2, ty, t), w, h, vw, vh, vox, voy);
       const { x, y } = clamped;
       paint(x, y, w, h, t * 1.5);
-      if (!positioned) {
-        positioned = true;
-        if (DEV) console.info(`[reel] first positioned frame: ${item.title ?? item.videoSrc}`);
-      }
       raf = requestAnimationFrame(tick);
     };
 

@@ -100,6 +100,11 @@
   cursor: grabbing;
 }
 
+.sling-button__pad:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 4px;
+}
+
 .sling-button__pad[aria-disabled='true'] {
   cursor: not-allowed;
   opacity: 0.5;

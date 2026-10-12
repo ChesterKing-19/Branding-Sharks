@@ -42,6 +42,18 @@
   border: 0;
   color: #fff;
   font-size: 24px;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-links a {
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--lime);
 }
 
 .mobile-menu {
@@ -73,7 +85,6 @@
 
 .mobile-menu a:hover {
   color: var(--lime);
-  padding-left: 8px;
 }
 
 .wordmark img {
@@ -95,10 +106,10 @@
   }
 
   .hamburger {
-    display: block;
+    display: flex;
   }
 
   .mobile-menu {
-    padding: 80px 22px 25px;
+    padding: calc(80px + env(safe-area-inset-top)) 22px calc(25px + env(safe-area-inset-bottom));
   }
 }

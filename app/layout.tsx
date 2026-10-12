@@ -32,6 +32,7 @@ const bodoniModa = Bodoni_Moda({
   subsets: ["latin"],
   variable: "--font-bodoni",
   display: "swap",
+  preload: false,
 });
 
 const allura = Allura({
@@ -39,6 +40,7 @@ const allura = Allura({
   subsets: ["latin"],
   variable: "--font-allura",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -50,6 +52,9 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#222426",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

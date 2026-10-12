@@ -20,22 +20,16 @@ const Services = dynamic(
   () => import("./components/sections/Services").then((m) => m.Services),
   {
     loading: () => (
-      <section className="services section" id="services" aria-label="Services">
+      <section
+        className="services section"
+        id="services"
+        aria-label="Services"
+        aria-busy="true"
+      >
         <div className="services-head">
           <h2>WHAT WE DO.</h2>
         </div>
-        <ul>
-          <li>Brand Strategy</li>
-          <li>Branding</li>
-          <li>Creative</li>
-          <li>Performance Marketing</li>
-          <li>Social Media</li>
-          <li>Content</li>
-          <li>SEO</li>
-          <li>Web Design &amp; Development</li>
-          <li>Lead Generation</li>
-          <li>Email &amp; CRM</li>
-        </ul>
+        <div className="services-stage" aria-hidden="true" />
       </section>
     ),
   }
@@ -45,7 +39,12 @@ const Work = dynamic(
   () => import("./components/sections/Work").then((m) => m.Work),
   {
     loading: () => (
-      <section className="work section" id="work" aria-label="Selected work">
+      <section
+        className="work"
+        id="work"
+        aria-label="Selected work"
+        aria-busy="true"
+      >
         <div className="work-head">
           <p className="eyebrow">Selected work / 2023—26</p>
           <h2>
@@ -54,13 +53,7 @@ const Work = dynamic(
             MOVES PEOPLE.
           </h2>
         </div>
-        <ul>
-          <li>VEDIKA — campaign showreel</li>
-          <li>VANTA — performance marketing</li>
-          <li>HARIAURA — branding and creative</li>
-          <li>NORTH — social and content</li>
-          <li>FORGE — digital and performance</li>
-        </ul>
+        <div className="work-carousel" aria-hidden="true" />
       </section>
     ),
   }

@@ -295,8 +295,9 @@
 
 .vui-btn {
   flex: none;
-  width: 34px;
-  height: 34px;
+  position: relative;
+  width: 44px;
+  height: 44px;
   border: 0;
   border-radius: 50%;
   display: grid;
@@ -344,16 +345,16 @@
 
 .vui-seek::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: var(--lime);
   border: 0;
 }
 
 .vui-seek::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: var(--lime);
   border: 0;

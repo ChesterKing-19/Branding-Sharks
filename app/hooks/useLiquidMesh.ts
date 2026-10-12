@@ -6,7 +6,7 @@ export type LiquidPoint = {
   velocity: number;
 };
 
-const POINTS = 96;
+const POINTS = 48;
 const DESKTOP_MIN = 801;
 
 export function useLiquidMesh(width: number, disabled = false): RefObject<LiquidPoint[]> {

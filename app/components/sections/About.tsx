@@ -3,7 +3,7 @@
 import { Arrow } from "../ui/Arrow";
 import { BRAND_NAMES } from "../../data/content";
 
-const marqueeLine = [...BRAND_NAMES, ...BRAND_NAMES.slice(0, 3)];
+const marqueeLine = [...BRAND_NAMES, ...BRAND_NAMES];
 
 export function About() {
   return (

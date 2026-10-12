@@ -26,7 +26,7 @@ export interface ProjectItem {
 export const CONTACT_EMAIL = "hello@brandingsharks.com" as const;
 
 export const SITE_LOGO = {
-  src: "/media/logo/logo-bs.png",
+  src: "/media/logo/logo-bs-480.webp",
   alt: "Branding Sharks",
   width: 182,
   height: 88,

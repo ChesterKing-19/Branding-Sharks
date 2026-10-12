@@ -10,6 +10,11 @@ export function Header() {
   const [menu, setMenu] = useState(false);
 
   useEffect(() => {
+    document.body.classList.toggle("menu-open", menu);
+    return () => document.body.classList.remove("menu-open");
+  }, [menu]);
+
+  useEffect(() => {
     if (!menu) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setMenu(false);

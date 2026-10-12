@@ -44,6 +44,7 @@ footer {
 .footer-cols a {
   font-size: 13px;
   color: #d1d5d4;
+  overflow-wrap: anywhere;
 }
 
 .footer-cols a:hover {
@@ -78,6 +79,8 @@ footer {
   }
 
   .legal {
-    font-size: 9px;
+    font-size: 11px;
+    flex-wrap: wrap;
+    gap: 8px 20px;
   }
 }
