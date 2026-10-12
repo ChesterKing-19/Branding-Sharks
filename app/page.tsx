@@ -54,9 +54,9 @@ const Work = dynamic(
           </h2>
         </div>
         <ul>
-          <li>NOVA — brand strategy and campaign</li>
+          <li>VEDIKA — campaign showreel</li>
           <li>VANTA — performance marketing</li>
-          <li>AURA — branding and creative</li>
+          <li>HARIAURA — branding and creative</li>
           <li>NORTH — social and content</li>
           <li>FORGE — digital and performance</li>
         </ul>

@@ -17,6 +17,10 @@ export function Work() {
       </div>
 
       <div className="work-carousel">
+        {/*
+          Cards with a `videoSrc` play inline on focus-zoom
+          (see effects/FlexCarouselReel); others zoom as before.
+        */}
         <FlexCarousel items={PROJECTS} preset="liquid" captions fit="portrait" cardHeight={0.8} />
       </div>
     </section>

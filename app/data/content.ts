@@ -15,7 +15,12 @@ export interface ServiceItem {
 export interface ProjectItem {
   title: string;
   alt: string;
+  /** Thumbnail/poster card image. */
   src: string;
+  /** Click-to-play reel. Absent = card keeps the zoom-focus interaction. */
+  videoSrc?: string;
+  /** Reel poster. Defaults to `src` when omitted. */
+  poster?: string;
 }
 
 export const CONTACT_EMAIL = "hello@brandingsharks.com" as const;
@@ -28,7 +33,7 @@ export const SITE_LOGO = {
 } as const;
 
 export const BRAND_REEL = {
-  src: "/media/reel/brand-reel.mp4",
+  src: "/media/reel/sarovar-reel.mp4",
   label: "Branding Sharks campaign showreel",
 } as const;
 
@@ -60,9 +65,11 @@ export const SERVICES: ServiceItem[] = SERVICE_COPY.map(([title, description], i
 
 export const PROJECTS: ProjectItem[] = [
   {
-    title: "NOVA",
-    alt: "NOVA brand strategy and campaign, +184% qualified leads",
-    src: "/media/work/nova.webp",
+    title: "VEDIKA",
+    alt: "VEDIKA campaign showreel",
+    src: "/media/work/vedika-thumbnail.webp",
+    videoSrc: "/media/work/vedika-reel.mp4",
+    poster: "/media/work/vedika-thumbnail.webp",
   },
   {
     title: "VANTA",
@@ -70,9 +77,11 @@ export const PROJECTS: ProjectItem[] = [
     src: "/media/work/vanta.webp",
   },
   {
-    title: "AURA",
-    alt: "AURA branding and creative, +62% brand engagement",
-    src: "/media/work/aura.webp",
+    title: "HARIAURA",
+    alt: "HARIAURA branding and creative, +62% brand engagement",
+    src: "/media/work/hariaura-thumbnail.jpg",
+    videoSrc: "/media/work/hariaura-reel.mp4",
+    poster: "/media/work/hariaura-thumbnail.jpg",
   },
   {
     title: "NORTH",

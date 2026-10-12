@@ -5,6 +5,7 @@ import type { CSSProperties } from 'react';
 import { Renderer, Program, Mesh, Triangle, Plane, Texture, RenderTarget } from 'ogl';
 
 import './FlexCarousel.css';
+import { FlexCarouselReel } from './FlexCarouselReel';
 
 type BendPreset = 'liquid' | 'ribbon' | 'vortex' | 'arch';
 type CurlMode = 'twist' | 'rise' | 'fall';
@@ -16,6 +17,12 @@ export interface FlexCarouselItem {
   alt?: string;
   title?: string;
   subtitle?: string;
+  /** Click-to-play reel. Absent = card keeps the zoom-focus interaction only. */
+  videoSrc?: string;
+  /** Reel poster. Defaults to `src` when omitted. */
+  poster?: string;
+  /** Reel aspect (w/h). Defaults to vertical 9:16. */
+  videoAspect?: number;
 }
 
 interface PresetValues {
@@ -116,9 +123,29 @@ interface Draw {
   alpha: number;
 }
 
+export interface FocusRect {
+  /** Focused item index. */
+  index: number;
+  /** Eased 0..1 zoom amount. */
+  amount: number;
+  /** Focused card rect in CSS px relative to the container. */
+  rect: { x: number; y: number; w: number; h: number };
+  containerW: number;
+  containerH: number;
+}
+
 interface Engine {
   wake: () => void;
   setItems: (items: FlexCarouselItem[]) => void;
+  /** Current focus-zoom geometry for the inline reel overlay (null when closed). */
+  getFocus: () => FocusRect | null;
+  /** Reverse the zoom (same as clicking empty canvas). */
+  close: () => void;
+  /**
+   * Cross-fade the focused canvas card out while the inline reel overlay
+   * plays over it (alpha follows 1 - focusEase). Always reset on unmount.
+   */
+  setFocusCardHidden: (hidden: boolean) => void;
 }
 
 interface Callbacks {
@@ -414,6 +441,7 @@ const FlexCarousel = ({
   const [active, setActive] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [focusOpen, setFocusOpen] = useState(false);
+  const [focusIndex, setFocusIndex] = useState(-1);
 
   const base = BEND_PRESETS[preset] || BEND_PRESETS.liquid;
   const pick = <K extends keyof PresetValues>(value: PresetValues[K] | undefined, key: K): PresetValues[K] =>
@@ -581,6 +609,11 @@ const FlexCarousel = ({
     const introState = { kind: 'none', t: 0, running: false, done: false, readyAt: 0 };
     const focus = { index: -1, pending: -1, t: 0, v: 0, target: 0 };
     let instances: Instance[] = [];
+    // Last computed rect of the focused card (CSS px, container-relative).
+    let focusRect: { x: number; y: number; w: number; h: number } | null = null;
+    let focusEaseLast = 0;
+    // When true, the focused card cross-fades out as the reel overlay fades in.
+    let hideFocusCard = false;
 
     const loadSlot = (item: FlexCarouselItem, index: number): Slot => {
       const texture = new Texture(gl, {
@@ -658,7 +691,11 @@ const FlexCarousel = ({
       focus.t = 0;
       focus.v = 0;
       focus.pending = -1;
+      focusRect = null;
+      focusEaseLast = 0;
+      hideFocusCard = false;
       setFocusOpen(false);
+      setFocusIndex(-1);
       introState.readyAt = performance.now();
       dirty = true;
       start();
@@ -734,6 +771,7 @@ const FlexCarousel = ({
       focus.pending = -1;
       focus.target = 1;
       setFocusOpen(true);
+      setFocusIndex(index);
       dirty = true;
       start();
     };
@@ -742,7 +780,9 @@ const FlexCarousel = ({
       focus.pending = -1;
       if (focus.target === 0) return false;
       focus.target = 0;
+      hideFocusCard = false;
       setFocusOpen(false);
+      setFocusIndex(-1);
       dirty = true;
       start();
       return true;
@@ -1025,6 +1065,9 @@ const FlexCarousel = ({
             if (focusAmount > 0) {
               if (i === focus.index && Math.abs(rel) < w) {
                 scale *= 1 + (focusScale - 1) * focusEase;
+                // Inline reel playing over the card: melt the card out
+                // as the video melts in (and back on close).
+                if (hideFocusCard) alpha *= 1 - focusEase;
               } else {
                 const order = Math.min(Math.abs(rel) / width, 1) * 0.25;
                 const part = easeInOut(focusAmount * 1.25 - order);
@@ -1035,6 +1078,10 @@ const FlexCarousel = ({
             const cw = w * scale;
             if (alpha <= 0.001 || x + cw / 2 < -40 || x - cw / 2 > width + 40) continue;
             draws.push({ i, rel, x, y: homeY + (fx ? fx.y : 0), cw, ch: cardH * scale, alpha });
+            if (focusAmount > 0 && i === focus.index && Math.abs(rel) < w) {
+              focusRect = { x, y: homeY + (fx ? fx.y : 0), w: cw, h: cardH * scale };
+              focusEaseLast = focusEase;
+            }
           }
         }
         draws.sort((a, b) => Math.abs(b.rel) - Math.abs(a.rel));
@@ -1338,7 +1385,27 @@ const FlexCarousel = ({
         dirty = true;
         start();
       },
-      setItems
+      setItems,
+      getFocus: () => {
+        if (focusRect && (focus.target > 0 || focus.t > 0.001)) {
+          return {
+            index: focus.index,
+            amount: clamp01(focusEaseLast),
+            rect: { ...focusRect },
+            containerW: width,
+            containerH: height,
+          };
+        }
+        return null;
+      },
+      close: () => {
+        closeFocus();
+      },
+      setFocusCardHidden: (hidden: boolean) => {
+        hideFocusCard = hidden;
+        dirty = true;
+        start();
+      }
     };
 
     resize();
@@ -1372,6 +1439,8 @@ const FlexCarousel = ({
 
   const current = list[active] || list[0];
   const label = current ? current.title || current.alt || `Image ${active + 1}` : '';
+  const focusItem = focusIndex >= 0 && focusIndex < list.length ? list[focusIndex] : null;
+  const reelOpen = focusOpen && !!focusItem?.videoSrc;
 
   return (
     <div
@@ -1382,6 +1451,7 @@ const FlexCarousel = ({
       aria-roledescription="carousel"
       aria-label="Image carousel"
       tabIndex={0}
+      data-reel-open={reelOpen ? '' : undefined}
     >
       {captions && current && revealed && (
         <div className="flex-carousel__caption" aria-hidden="true">
@@ -1399,7 +1469,9 @@ const FlexCarousel = ({
       <div className="flex-carousel__live" aria-live="polite" aria-atomic="true">
         {`${label}, ${active + 1} of ${list.length}`}
       </div>
-    </div>
+      {focusOpen && focusItem?.videoSrc && (
+        <FlexCarouselReel item={focusItem} engineRef={engineRef} hostRef={containerRef} onClose={() => {}} />
+      )}    </div>
   );
 };
 
