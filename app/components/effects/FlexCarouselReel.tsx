@@ -118,15 +118,41 @@ export function FlexCarouselReel({ item, engineRef, hostRef, onClose }: FlexCaro
     };
 
     const targetSize = () => {
-      const maxW = window.innerWidth * 0.94;
-      const maxH = window.innerHeight * 0.94;
+      // visualViewport tracks iOS Safari's dynamic toolbar in real time;
+      // window dimensions include area hidden behind it.
+      const vv = window.visualViewport;
+      const vw = vv ? vv.width : window.innerWidth;
+      const vh = vv ? vv.height : window.innerHeight;
+      const maxW = vw * 0.94;
+      const maxH = vh * 0.94;
       let tw = maxW;
       let th = tw / aspect;
       if (th > maxH) {
         th = maxH;
         tw = th * aspect;
       }
-      return { tw, th };
+      return { tw, th, vw, vh, ox: vv ? vv.offsetLeft : 0, oy: vv ? vv.offsetTop : 0 };
+    };
+
+    // A misplaced frame self-corrects next tick instead of sticking
+    // off-screen (mobile toolbars shift the viewport while open).
+    const clampToView = (
+      x: number,
+      y: number,
+      w: number,
+      h: number,
+      vw: number,
+      vh: number,
+      vox: number,
+      voy: number
+    ) => {
+      const m = 8;
+      const maxX = vox + vw - w - m;
+      const maxY = voy + vh - h - m;
+      return {
+        x: Math.min(Math.max(x, vox + m), Math.max(vox + m, maxX)),
+        y: Math.min(Math.max(y, voy + m), Math.max(voy + m, maxY)),
+      };
     };
 
     const tick = () => {
@@ -143,8 +169,9 @@ export function FlexCarouselReel({ item, engineRef, hostRef, onClose }: FlexCaro
             warned = true;
             if (DEV) console.warn('[reel] no focus geometry after 1s, using centered fallback');
           }
-          const { tw, th } = targetSize();
-          paint((window.innerWidth - tw) / 2, (window.innerHeight - th) / 2, tw, th, 1);
+          const { tw, th, vw, vh, ox: vox, oy: voy } = targetSize();
+          // Center within the *visible* viewport (vox/voy offset included).
+          paint(vox + (vw - tw) / 2, voy + (vh - th) / 2, tw, th, 1);
           return;
         }
         // Engine hasn't drawn the focused frame yet (first ticks) — retry.
@@ -161,13 +188,13 @@ export function FlexCarouselReel({ item, engineRef, hostRef, onClose }: FlexCaro
       // Morph origin in viewport space (fixes off-screen start on scrolled pages).
       const sx = c.x + ox;
       const sy = c.y + oy;
-      const { tw, th } = targetSize();
+      const { tw, th, vw, vh, ox: vox, oy: voy } = targetSize();
       const tx = sx - tw / 2;
       const ty = sy - th / 2;
-      const x = lerp(sx - c.w / 2, tx, t);
-      const y = lerp(sy - c.h / 2, ty, t);
       const w = lerp(c.w, tw, t);
       const h = lerp(c.h, th, t);
+      const clamped = clampToView(lerp(sx - c.w / 2, tx, t), lerp(sy - c.h / 2, ty, t), w, h, vw, vh, vox, voy);
+      const { x, y } = clamped;
       paint(x, y, w, h, t * 1.5);
       if (!positioned) {
         positioned = true;

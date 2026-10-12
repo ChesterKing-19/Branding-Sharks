@@ -192,17 +192,25 @@
 
 /* Centered 9:16 end-state in pure CSS: the player is visible even if the
    morph loop never runs. The rAF driver overrides transform/size/opacity
-   inline when healthy (morph from the card + fade-out on close). */
+   inline when healthy (morph from the card + fade-out on close).
+   dvh + max-width + safe-area keep it on-screen under mobile toolbars
+   and notches; the per-frame clamp enforces the same at runtime. */
 .flex-reel-box {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(94vw, calc(94vh * 9 / 16));
-  height: min(94vh, calc(94vw * 16 / 9));
+  width: min(94vw, calc(94vh * 9 / 16), calc(94dvh * 9 / 16));
+  height: min(94vh, 94dvh, calc(94vw * 16 / 9));
+  max-width: calc(100vw - 16px);
+  max-height: calc(100dvh - 16px);
   transform: translate(-50%, -50%);
   opacity: 1;
   animation: flex-reel-dim 300ms ease backwards;
   will-change: transform, width, height, opacity;
+}
+
+.flex-reel-layer {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 .flex-reel-video {
