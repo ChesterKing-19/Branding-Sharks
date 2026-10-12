@@ -7,6 +7,7 @@ import { Testimonial } from "./components/sections/Testimonial";
 import { FinalCTA } from "./components/sections/FinalCTA";
 import { Footer } from "./components/sections/Footer";
 import ScrollToTopButton from "./components/ui/ScrollToTopButton";
+import { CustomCursor } from "./components/effects/CustomCursor";
 
 // Below-the-fold WebGL is split into separate chunks so the hero stays eager.
 // dynamic() without ssr:false keeps SSR output (content visible + indexable)
@@ -81,6 +82,7 @@ export default function Home() {
       </main>
       <Footer />
       <ScrollToTopButton />
+      <CustomCursor />
     </>
   );
 }
