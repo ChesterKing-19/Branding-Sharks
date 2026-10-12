@@ -69,6 +69,15 @@ export function FlexCarouselReel({ item, engineRef, hostRef, onClose }: FlexCaro
     // Melt the canvas card out while the video plays over it.
     engineRef.current?.setFocusCardHidden(true);
 
+    // Small touch screens: skip the morph entirely and render statically
+    // centered via CSS. No engine rects, offsets, or toolbar math — a
+    // centered player cannot misplace on dynamic mobile viewports.
+    const staticMode =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(pointer: coarse)').matches &&
+      Math.min(window.innerWidth, window.innerHeight) < 600;
+    if (staticMode && DEV) console.info('[reel] static centered mode (touch small-screen)');
+
     const close = () => {
       if (closedRef.current) return;
       closedRef.current = true;
@@ -206,7 +215,9 @@ export function FlexCarouselReel({ item, engineRef, hostRef, onClose }: FlexCaro
     window.addEventListener('pointerdown', onPointerDown, { capture: true });
     window.addEventListener('pointerup', onPointerUp);
     window.addEventListener('keydown', onKey);
-    raf = requestAnimationFrame(tick);
+    // Static mode needs no positioning loop: CSS centers the player and
+    // fades the backdrop. Listeners above still handle close.
+    if (!staticMode) raf = requestAnimationFrame(tick);
     videoRef.current?.focus({ preventScroll: true });
 
     return () => {
