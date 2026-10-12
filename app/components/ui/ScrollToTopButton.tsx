@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "motion/react";
-import SlingButton from "./SlingButton/SlingButton";
+import SlingButton from "./SlingButton";
 
 export interface ScrollToTopButtonProps {
   size?: number;
@@ -76,6 +76,7 @@ export default function ScrollToTopButton({
     <div
       className={`scroll-to-top${visible ? " visible" : ""}${className ? " " + className : ""}`}
       aria-hidden={!visible}
+      inert={!visible}
     >
       <SlingButton
         onSend={scrollToTop}

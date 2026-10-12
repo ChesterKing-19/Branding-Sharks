@@ -1,6 +1,7 @@
 "use client";
 
-import { Arrow } from "./Arrow";
+import { Arrow } from "../ui/Arrow";
+import { CONTACT_EMAIL } from "../../data/content";
 
 export function FinalCTA() {
   return (
@@ -8,7 +9,7 @@ export function FinalCTA() {
       <div>
         <p className="eyebrow">Your next move</p>
         <h2>READY TO<br />MAKE SOME<br /><em>NOISE?</em></h2>
-        <a href="mailto:hello@brandingsharks.com" className="cta-circle">
+        <a href={`mailto:${CONTACT_EMAIL}`} className="cta-circle">
           START A<br />PROJECT <Arrow />
         </a>
       </div>

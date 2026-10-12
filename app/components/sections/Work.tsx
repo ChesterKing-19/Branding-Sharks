@@ -1,35 +1,7 @@
 "use client";
 
-import FlexCarousel from "./FlexCarousel";
-import type { FlexCarouselItem } from "./FlexCarousel";
-
-const PROJECTS: FlexCarouselItem[] = [
-  {
-    title: "NOVA",
-    alt: "NOVA brand strategy and campaign, +184% qualified leads",
-    src: "/assets/services/service-1.webp",
-  },
-  {
-    title: "VANTA",
-    alt: "VANTA performance marketing, 3.9x ROAS",
-    src: "/assets/services/service-2.webp",
-  },
-  {
-    title: "AURA",
-    alt: "AURA branding and creative, +62% brand engagement",
-    src: "/assets/services/service-3.webp",
-  },
-  {
-    title: "NORTH",
-    alt: "NORTH social and content, 28M organic impressions",
-    src: "/assets/services/service-4.webp",
-  },
-  {
-    title: "FORGE",
-    alt: "FORGE digital and performance, +117% conversion rate",
-    src: "/assets/services/service-1.webp",
-  },
-];
+import FlexCarousel from "../effects/FlexCarousel";
+import { PROJECTS } from "../../data/content";
 
 export function Work() {
   return (

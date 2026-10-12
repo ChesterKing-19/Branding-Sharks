@@ -1,30 +1,11 @@
 "use client";
 
-import InfiniteMenu from "./InfiniteMenu";
-import SplitFlapText from "./SplitFlapText";
+import InfiniteMenu from "../effects/InfiniteMenu";
+import SplitFlapText from "../effects/SplitFlapText";
+import { SERVICES } from "../../data/content";
 
-const IMAGES = [
-  "/assets/services/service-1.webp",
-  "/assets/services/service-2.webp",
-  "/assets/services/service-3.webp",
-  "/assets/services/service-4.webp",
-];
-
-const SERVICES: [string, string][] = [
-  ["Brand Strategy", "Position your brand to win before the first campaign goes live."],
-  ["Branding", "Identity systems with a sharper point of view and a longer shelf life."],
-  ["Creative", "Ideas, art direction and production designed to earn attention."],
-  ["Performance Marketing", "Media, measurement and creative testing that turns demand into revenue."],
-  ["Social Media", "Always-on social systems that give a brand its own momentum."],
-  ["Content", "Stories and assets built for culture, channels and conversion."],
-  ["SEO", "Search visibility engineered for how people discover now."],
-  ["Web Design & Development", "Digital flagships with clarity, pace and a reason to act."],
-  ["Lead Generation", "Demand systems that turn interest into qualified conversations."],
-  ["Email & CRM", "Lifecycle moments that make customers return, refer and remember."],
-];
-
-const ITEMS = SERVICES.map(([title, description], i) => ({
-  image: IMAGES[i % IMAGES.length],
+const ITEMS = SERVICES.map(({ title, description, image }) => ({
+  image,
   link: "",
   title,
   description,

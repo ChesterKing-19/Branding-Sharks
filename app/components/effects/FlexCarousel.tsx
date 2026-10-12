@@ -447,8 +447,8 @@ const FlexCarousel = ({
       interval,
       captureWheel
     };
-    engineRef.current?.wake();
-  });
+    // No wake() here: the engine sleeps when idle and interactions wake it explicitly.
+  }, [itemsKey, intro, cardHeight, gap, radius, fit, lensWidth, lensHeight, tilt, roundness, bend, reach, curl, dispersion, liquid, followCursor, squeeze, focusOnClick, autoplay, interval, captureWheel]);
 
   useEffect(() => {
     engineRef.current?.setItems(itemsRef.current);
@@ -1302,6 +1302,15 @@ const FlexCarousel = ({
     const onVisibility = () => {
       if (!document.hidden) start();
     };
+    const onContextLost = (event: Event) => {
+      event.preventDefault();
+      // Park the loop; resume on restore.
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    const onContextRestored = () => {
+      start();
+    };
 
     container.addEventListener('pointerdown', onPointerDown);
     container.addEventListener('pointermove', onPointerMove);
@@ -1313,6 +1322,8 @@ const FlexCarousel = ({
     container.addEventListener('focus', onFocus);
     container.addEventListener('blur', onBlur);
     document.addEventListener('visibilitychange', onVisibility);
+    canvas.addEventListener('webglcontextlost', onContextLost);
+    canvas.addEventListener('webglcontextrestored', onContextRestored);
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(container);
@@ -1350,6 +1361,8 @@ const FlexCarousel = ({
       container.removeEventListener('focus', onFocus);
       container.removeEventListener('blur', onBlur);
       document.removeEventListener('visibilitychange', onVisibility);
+      canvas.removeEventListener('webglcontextlost', onContextLost);
+      canvas.removeEventListener('webglcontextrestored', onContextRestored);
       slots.forEach(slot => slot.dispose());
       slots = [];
       gl.getExtension('WEBGL_lose_context')?.loseContext();

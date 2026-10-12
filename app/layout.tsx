@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   Manrope,
   DM_Mono,
@@ -45,6 +45,11 @@ export const metadata: Metadata = {
   title: "Branding Sharks — Marketing & Advertising Agency",
   description:
     "Branding Sharks is a full-service marketing and advertising agency helping ambitious brands build attention, create demand and drive measurable growth.",
+  robots: { index: true, follow: true },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#222426",
 };
 
 export default function RootLayout({

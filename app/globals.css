@@ -48,43 +48,7 @@ h2 em {
   color: var(--lime);
 }
 
-/* --- navigation --- */
-.nav {
-  position: absolute;
-  z-index: 10;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 26px 4vw;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #fff;
-}
-
-.wordmark {
-  display: inline-flex;
-  align-items: center;
-}
-
-.wordmark img {
-  height: 72px;
-  width: auto;
-  display: block;
-}
-
-.wordmark span,
-.nav small {
-  color: var(--lime);
-}
-
-.nav nav {
-  display: flex;
-  gap: 34px;
-  align-items: center;
-  font-size: 15px;
-}
-
+/* --- shared pills / arrows (Header, FinalCTA, About) --- */
 .pill {
   background: var(--green);
   color: #fff;
@@ -168,50 +132,6 @@ h2 em {
 .pill:hover .arrow,
 .text-link:hover .arrow {
   transform: translate(3px, -3px);
-}
-
-.hamburger {
-  display: none;
-  background: transparent;
-  border: 0;
-  color: #fff;
-  font-size: 24px;
-}
-
-.mobile-menu {
-  position: fixed;
-  z-index: 9;
-  inset: 0 0 auto;
-  background: var(--ink);
-  color: #fff;
-  transform: translateY(-102%);
-  transition: transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
-  padding: 100px 6vw 36px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.mobile-menu.open {
-  transform: translateY(0);
-}
-
-.mobile-menu a {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  padding: 10px 0;
-  border-bottom: 1px solid #3b3d3e;
-  transition: 0.2s;
-}
-
-.mobile-menu a:hover {
-  color: var(--lime);
-  padding-left: 8px;
-}
-
-.wordmark img {
-  height: 88px;
 }
 
 /* --- shared sections --- */
@@ -477,88 +397,18 @@ h2 {
   display: block;
 }
 
-/* --- footer --- */
-footer {
-  background: var(--ink);
-  color: #fff;
-  padding: 70px 7vw 20px;
+/* --- footer styles live in components/sections/Footer.css --- */
+
+/* Focus visibility must survive the global reset: never remove outlines without replacement. */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
 }
 
-.footer-word {
-  font-family: var(--font-bodoni), Georgia, serif;
-  font-size: clamp(3rem, 7vw, 8rem);
-  font-weight: 800;
-  line-height: 0.76;
-  letter-spacing: -0.04em;
-  margin-bottom: 80px;
-}
-
-.footer-word em {
-  font-style: normal;
-  color: var(--lime);
-}
-
-.footer-cols {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.5fr;
-  gap: 30px;
-}
-
-.footer-cols div {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-
-.footer-cols p {
-  font: 10px var(--font-dm-mono);
-  color: var(--lime);
-  text-transform: uppercase;
-  margin: 0 0 7px;
-}
-
-.footer-cols a {
-  font-size: 13px;
-  color: #d1d5d4;
-}
-
-.footer-cols a:hover {
-  color: var(--lime);
-}
-
-.legal {
-  margin-top: 65px;
-  padding-top: 15px;
-  border-top: 1px solid #424546;
-  display: flex;
-  justify-content: space-between;
-  color: #9ca1a0;
-  font-size: 10px;
-}
-
-/* --- responsive (work + shared) --- */
+/* --- responsive (work + shared; nav rules live in sections/Header.css,
+   footer rules in sections/Footer.css) --- */
 @media (max-width: 800px) {
-  .nav {
-    padding: 20px 22px;
-  }
-
-  .wordmark img {
-    height: 50px;
-  }
-
-  .nav nav,
-  .dark-pill {
-    display: none;
-  }
-
-  .hamburger {
-    display: block;
-  }
-
-  .mobile-menu {
-    padding: 80px 22px 25px;
-  }
-
   .section {
     padding: 82px 22px;
   }
@@ -612,18 +462,6 @@ footer {
   .giant-arrow {
     font-size: 17rem;
     bottom: -4vw;
-  }
-
-  .footer-cols {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .footer-cols div:last-child {
-    grid-column: 1 / -1;
-  }
-
-  .legal {
-    font-size: 9px;
   }
 }
 

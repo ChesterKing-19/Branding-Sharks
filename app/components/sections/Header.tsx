@@ -1,16 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { Arrow } from "./Arrow";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { Arrow } from "../ui/Arrow";
+import { SITE_LOGO } from "../../data/content";
+import "./Header.css";
 
 export function Header() {
   const [menu, setMenu] = useState(false);
+
+  useEffect(() => {
+    if (!menu) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenu(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menu]);
 
   return (
     <>
       <header className="nav">
         <a className="wordmark" href="#top" aria-label="Branding Sharks">
-          <img src="/assets/logo/logoBS.png" alt="Branding Sharks" />
+          <Image src={SITE_LOGO.src} alt={SITE_LOGO.alt} width={SITE_LOGO.width} height={SITE_LOGO.height} priority />
         </a>
         <nav className="nav-links">
           <a href="#work">Work</a>
@@ -26,12 +38,18 @@ export function Header() {
           onClick={() => setMenu(!menu)}
           aria-label="Toggle menu"
           aria-expanded={menu}
+          aria-controls="mobile-menu"
         >
           {menu ? "×" : "☰"}
         </button>
       </header>
 
-      <nav className={`mobile-menu ${menu ? "open" : ""}`} aria-hidden={!menu}>
+      <nav
+        id="mobile-menu"
+        className={`mobile-menu ${menu ? "open" : ""}`}
+        aria-hidden={!menu}
+        inert={!menu}
+      >
         <a href="#work" onClick={() => setMenu(false)}>Work</a>
         <a href="#services" onClick={() => setMenu(false)}>Services</a>
         <a href="#about" onClick={() => setMenu(false)}>About</a>

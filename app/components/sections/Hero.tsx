@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import DecryptedText from "./DecryptedText";
-import Ferrofluid from "./Ferrofluid";
+import DecryptedText from "../effects/DecryptedText";
+import Ferrofluid from "../effects/Ferrofluid";
 
 const headlineLines = [
   { text: "WE BUILD", className: "hero-line hero-line-one" },
@@ -94,7 +94,7 @@ export function Hero() {
         mouseInteraction
         mouseStrength={0.5}
         mouseRadius={0.2}
-        paused={!heroInView}
+        paused={!heroInView || reduceMotion}
       />
 
       <div className="hero-content">

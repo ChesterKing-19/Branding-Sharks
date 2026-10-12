@@ -242,6 +242,8 @@ const Ferrofluid: FC<FerrofluidProps> = ({
   const mouseTargetRef = useRef<[number, number]>([0, 0]);
   const lastTimeRef = useRef(0);
   const pausedRef = useRef(paused);
+  const contextLostRef = useRef(false);
+  const renderErrorLoggedRef = useRef(false);
   const loopRef = useRef<FrameRequestCallback | null>(null);
 
   useEffect(() => {
@@ -249,7 +251,7 @@ const Ferrofluid: FC<FerrofluidProps> = ({
     if (!container) return;
 
     const renderer = new Renderer({
-      dpr: dpr ?? (typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1),
+      dpr: Math.min(dpr ?? (typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1), 2),
       alpha: true,
       antialias: true
     });
@@ -324,8 +326,23 @@ const Ferrofluid: FC<FerrofluidProps> = ({
       canvas.addEventListener("pointermove", onPointerMove);
     }
 
-    const onContextLost = (event: Event) => event.preventDefault();
+    const onContextLost = (event: Event) => {
+      event.preventDefault();
+      // Park the loop; it resumes on context restore or via the paused prop.
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+      contextLostRef.current = true;
+    };
+    const onContextRestored = () => {
+      contextLostRef.current = false;
+      renderErrorLoggedRef.current = false;
+      resize();
+      if (!pausedRef.current && !rafRef.current && loopRef.current) {
+        rafRef.current = requestAnimationFrame(loopRef.current);
+      }
+    };
     canvas.addEventListener("webglcontextlost", onContextLost);
+    canvas.addEventListener("webglcontextrestored", onContextRestored);
 
     const loop: FrameRequestCallback = (t) => {
       uniforms.iTime.value = t * 0.001;
@@ -348,16 +365,27 @@ const Ferrofluid: FC<FerrofluidProps> = ({
       } else {
         lastTimeRef.current = t;
       }
-      if (programRef.current && meshRef.current) {
+      if (programRef.current && meshRef.current && !contextLostRef.current) {
         try {
           renderer.render({ scene: meshRef.current });
         } catch {
-          console.error("Ferrofluid: WebGL render failed");
+          // Log once; the loop would otherwise spam every frame on context loss.
+          if (!renderErrorLoggedRef.current) {
+            renderErrorLoggedRef.current = true;
+            if (process.env.NODE_ENV !== "production") {
+              console.error("Ferrofluid: WebGL render failed");
+            }
+          }
         }
       }
     };
     loopRef.current = loop;
-    rafRef.current = requestAnimationFrame(loop);
+    pausedRef.current = paused;
+    if (!paused) {
+      rafRef.current = requestAnimationFrame(loop);
+    } else {
+      rafRef.current = null;
+    }
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -365,6 +393,7 @@ const Ferrofluid: FC<FerrofluidProps> = ({
       loopRef.current = null;
       if (mouseInteraction) canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("webglcontextlost", onContextLost);
+      canvas.removeEventListener("webglcontextrestored", onContextRestored);
       ro.disconnect();
       if (canvas.parentElement === container) {
         container.removeChild(canvas);
@@ -405,7 +434,7 @@ const Ferrofluid: FC<FerrofluidProps> = ({
 
   useEffect(() => {
     pausedRef.current = paused;
-    if (!paused && !rafRef.current && loopRef.current) {
+    if (!paused && !contextLostRef.current && !rafRef.current && loopRef.current) {
       rafRef.current = requestAnimationFrame(loopRef.current);
     }
   }, [paused]);

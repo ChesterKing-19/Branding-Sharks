@@ -173,6 +173,9 @@ const compile = (gl: WebGL2RenderingContext, type: number, source: string) => {
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) return shader;
+  if (process.env.NODE_ENV !== "production") {
+    console.error("InfiniteMenu: shader compile failed", gl.getShaderInfoLog(shader));
+  }
   gl.deleteShader(shader);
   return null;
 };
@@ -252,7 +255,15 @@ const InfiniteMenu = ({
     gl.attachShader(program, vertex);
     gl.attachShader(program, fragment);
     gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return undefined;
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      if (process.env.NODE_ENV !== "production") {
+        console.error("InfiniteMenu: program link failed", gl.getProgramInfoLog(program));
+      }
+      gl.deleteShader(vertex);
+      gl.deleteShader(fragment);
+      gl.deleteProgram(program);
+      return undefined;
+    }
     gl.useProgram(program);
 
     const uniforms: Record<string, WebGLUniformLocation | null> = {};
@@ -660,30 +671,21 @@ const InfiniteMenu = ({
       }
     };
 
+    // Reused projection matrix (column-major perspective); mutated per frame.
+    const projection = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, -1, 0, 0, -1, 0]);
+
     const render = () => {
       const s = settingsRef.current;
       const aspect = state.width / state.height;
       const f = 1 / Math.tan(FOV / 2);
       const near = 0.05;
       const far = 50;
-      const projection = new Float32Array([
-        f / aspect,
-        0,
-        0,
-        0,
-        0,
-        f,
-        0,
-        0,
-        0,
-        0,
-        (far + near) / (near - far),
-        -1,
-        0,
-        0,
-        (2 * far * near) / (near - far),
-        0
-      ]);
+      // Reused across frames to avoid per-frame allocation.
+      projection[0] = f / aspect;
+      projection[5] = f;
+      projection[10] = (far + near) / (near - far);
+      projection[11] = -1;
+      projection[14] = (2 * far * near) / (near - far);
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -809,6 +811,18 @@ const InfiniteMenu = ({
 
     engineRef.current = { loadItems, wake };
 
+    const onContextLost = (event: Event) => {
+      event.preventDefault();
+      // Park the loop; resume on restore if still visible.
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    const onContextRestored = () => {
+      last = 0;
+      wake();
+    };
+    canvas.addEventListener('webglcontextlost', onContextLost);
+    canvas.addEventListener('webglcontextrestored', onContextRestored);
     canvas.addEventListener('pointerdown', onPointerDown);
     canvas.addEventListener('pointermove', onPointerMove);
     canvas.addEventListener('pointerup', onPointerUp);
@@ -840,6 +854,8 @@ const InfiniteMenu = ({
       canvas.removeEventListener('pointermove', onPointerMove);
       canvas.removeEventListener('pointerup', onPointerUp);
       canvas.removeEventListener('pointercancel', onPointerUp);
+      canvas.removeEventListener('webglcontextlost', onContextLost);
+      canvas.removeEventListener('webglcontextrestored', onContextRestored);
       root.removeEventListener('keydown', onKeyDown);
       root.removeEventListener('pointerenter', onEnter);
       root.removeEventListener('pointerleave', onLeave);
@@ -862,9 +878,8 @@ const InfiniteMenu = ({
     engineRef.current?.loadItems(items);
   }, [items]);
 
-  useEffect(() => {
-    engineRef.current?.wake();
-  });
+  // Sync-only effect: do not wake the RAF loop on every render (defeats idle-sleep).
+  // Interactions call wake() explicitly.
 
   const current = items.length ? items[active % items.length] : null;
   const ink = settings.theme === 'light' ? '#120f17' : '#ffffff';

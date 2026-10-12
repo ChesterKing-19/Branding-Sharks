@@ -1,0 +1,104 @@
+/* Header navigation. Imported by sections/Header.tsx. */
+
+.nav {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 26px 4vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+}
+
+.wordmark img {
+  height: 72px;
+  width: auto;
+  display: block;
+}
+
+.wordmark span,
+.nav small {
+  color: var(--lime);
+}
+
+.nav nav {
+  display: flex;
+  gap: 34px;
+  align-items: center;
+  font-size: 15px;
+}
+
+.hamburger {
+  display: none;
+  background: transparent;
+  border: 0;
+  color: #fff;
+  font-size: 24px;
+}
+
+.mobile-menu {
+  position: fixed;
+  z-index: 9;
+  inset: 0 0 auto;
+  background: var(--ink);
+  color: #fff;
+  transform: translateY(-102%);
+  transition: transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+  padding: 100px 6vw 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-menu.open {
+  transform: translateY(0);
+}
+
+.mobile-menu a {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  padding: 10px 0;
+  border-bottom: 1px solid #3b3d3e;
+  transition: 0.2s;
+}
+
+.mobile-menu a:hover {
+  color: var(--lime);
+  padding-left: 8px;
+}
+
+.wordmark img {
+  height: 88px;
+}
+
+@media (max-width: 800px) {
+  .nav {
+    padding: 20px 22px;
+  }
+
+  .wordmark img {
+    height: 50px;
+  }
+
+  .nav nav,
+  .dark-pill {
+    display: none;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .mobile-menu {
+    padding: 80px 22px 25px;
+  }
+}

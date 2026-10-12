@@ -1,23 +1,28 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "motion/react";
+import { BRAND_REEL, GALLERY_TILES } from "../../data/content";
 
-const GALLERY_ITEMS = [
-  "nova", "vanta", "aura", "north", "forge",
-  "video", "kin", "orbit", "lumen",
-  "drift", "pulse", "tide", "echo", "flux", "current",
-];
+const GALLERY_ITEMS: readonly string[] = GALLERY_TILES;
 
 export function Gallery() {
   const galleryPin = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoError, setVideoError] = useState(false);
+  const reduceMotion = useReducedMotion() ?? false;
 
   useEffect(() => {
     const reel = stage.current?.querySelector<HTMLElement>(".reel-focus");
     const video = videoRef.current;
     if (!reel || !video || !("IntersectionObserver" in window)) return;
+    // Respect reduced-motion: never autoplay the showreel.
+    if (reduceMotion) {
+      video.pause();
+      video.removeAttribute("autoplay");
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -31,7 +36,7 @@ export function Gallery() {
     );
     observer.observe(reel);
     return () => observer.disconnect();
-  }, []);
+  }, [reduceMotion]);
 
   useEffect(() => {
     const el = galleryPin.current;
@@ -72,9 +77,9 @@ export function Gallery() {
   }, []);
 
   return (
-    <section className="see-work" ref={galleryPin} aria-label="Selected Branding Sharks work">
+    <section className="see-work" ref={galleryPin} aria-labelledby="gallery-heading">
       <div className="see-work-stage" ref={stage}>
-        <p className="sr-only">Selected work</p>
+        <h2 id="gallery-heading" className="sr-only">Selected work</h2>
 
         <div className="see-work-gallery">
           {GALLERY_ITEMS.map((item, i) =>
@@ -100,7 +105,7 @@ export function Gallery() {
           )}
         </div>
 
-        <div className="reel-focus" aria-label="Brand film">
+        <div className="reel-focus" role="img" aria-label="Brand film">
           {videoError ? (
             <div className="reel-video reel-video--fallback">
               <span>REEL UNAVAILABLE</span>
@@ -109,14 +114,14 @@ export function Gallery() {
             <video
               ref={videoRef}
               className="reel-video"
-              autoPlay
+              autoPlay={!reduceMotion}
               muted
-              loop
+              loop={!reduceMotion}
               playsInline
-              preload="metadata"
-              src="/assets/videos/reel-test.mp4"
+              preload={reduceMotion ? "none" : "metadata"}
+              src={BRAND_REEL.src}
               onError={() => setVideoError(true)}
-              aria-label="Branding Sharks campaign showreel"
+              aria-label={BRAND_REEL.label}
             />
           )}
         </div>

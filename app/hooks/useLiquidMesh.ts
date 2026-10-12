@@ -9,7 +9,7 @@ export type LiquidPoint = {
 const POINTS = 96;
 const DESKTOP_MIN = 801;
 
-export function useLiquidMesh(width: number): RefObject<LiquidPoint[]> {
+export function useLiquidMesh(width: number, disabled = false): RefObject<LiquidPoint[]> {
   const pointsRef = useRef<LiquidPoint[]>([]);
   const mouseRef = useRef({ x: 0, y: 9999 });
   const widthRef = useRef(width);
@@ -35,7 +35,7 @@ export function useLiquidMesh(width: number): RefObject<LiquidPoint[]> {
     prevWidthRef.current = width;
     widthRef.current = width;
 
-    if (width < DESKTOP_MIN) return;
+    if (width < DESKTOP_MIN || disabled) return;
 
     const onMove = (e: MouseEvent) => {
       mouseRef.current.x = e.clientX;
@@ -97,7 +97,7 @@ export function useLiquidMesh(width: number): RefObject<LiquidPoint[]> {
       cancelAnimationFrame(frame);
       window.removeEventListener("mousemove", onMove);
     };
-  }, [width]);
+  }, [width, disabled]);
 
   return pointsRef;
 }

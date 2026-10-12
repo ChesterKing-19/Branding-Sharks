@@ -1,6 +1,6 @@
+"use client";
+
 import { CSSProperties, HTMLAttributes, useEffect, useMemo, useRef, useState } from 'react';
-// The stylesheet is loaded by the bundler; TypeScript does not have a declaration for CSS imports.
-// @ts-ignore
 import './SplitFlapText.css';
 
 type TileState = {
@@ -391,7 +391,6 @@ const SplitFlapText = ({
       ref={containerRef}
       className={`split-flap-text ${className}`.trim()}
       style={componentStyle}
-      role="text"
       aria-label={settledText || undefined}
       {...props}
     >

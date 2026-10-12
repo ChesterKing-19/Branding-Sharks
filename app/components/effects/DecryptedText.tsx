@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo, useCallback } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { CSSProperties } from "react";
 import type { HTMLMotionProps } from "motion/react";
 
@@ -64,6 +64,7 @@ export default function DecryptedText({
   const [direction, setDirection] = useState<"forward" | "reverse">("forward");
 
   const containerRef = useRef<HTMLSpanElement>(null);
+  const reduceMotion = useReducedMotion() ?? false;
   const orderRef = useRef<number[]>([]);
   const pointerRef = useRef(0);
   const revealedRef = useRef<Set<number>>(new Set<number>());
@@ -311,6 +312,16 @@ export default function DecryptedText({
   }, [text, commitRevealed]);
 
   useEffect(() => {
+    if (reduceMotion) {
+      // Respect reduced-motion: present essential content immediately, no scramble.
+      clearInterval(intervalRef.current);
+      clearTimeout(startTimerRef.current);
+      setDisplayText(text);
+      setIsDecrypted(true);
+      setIsAnimating(false);
+      commitRevealed(new Set<number>());
+      return;
+    }
     if (animateOn !== "view" && animateOn !== "inViewHover") return;
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
@@ -345,7 +356,7 @@ export default function DecryptedText({
         observer.unobserve(currentRef);
       }
     };
-  }, [animateOn, triggerDecrypt, encryptInstantly, delay]);
+  }, [animateOn, triggerDecrypt, encryptInstantly, delay, reduceMotion, text, commitRevealed]);
 
   useEffect(() => {
     if (animateOn === "click") {

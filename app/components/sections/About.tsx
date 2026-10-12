@@ -1,6 +1,9 @@
 "use client";
 
-import { Arrow } from "./Arrow";
+import { Arrow } from "../ui/Arrow";
+import { BRAND_NAMES } from "../../data/content";
+
+const marqueeLine = [...BRAND_NAMES, ...BRAND_NAMES.slice(0, 3)];
 
 export function About() {
   return (
@@ -12,16 +15,18 @@ export function About() {
           <a className="text-link" href="#contact">About Branding Sharks <Arrow /></a>
         </div>
         <div className="intro-image">
-          <div className="portrait" />
+          <div className="portrait" aria-hidden="true" />
           <span>THE<br />EDGE<br />IS<br />INTENT.</span>
           <p>We combine brand intelligence, creative firepower and performance rigour to make ambitious businesses hard to overlook.</p>
         </div>
       </section>
 
-      <section className="brands">
+      <section className="brands" aria-label="Trusted by ambitious brands">
         <p className="eyebrow">Trusted by ambitious brands</p>
-        <div className="brand-track">
-          NOVA <b>VERTEX</b> ORBIT <b>LUMEN</b> AURA <b>MONUMENT</b> NORTH <b>KIN</b> FORGE <b>VANTA</b> NOVA <b>VERTEX</b> ORBIT
+        <div className="brand-track" aria-hidden="true">
+          {marqueeLine.map((name, i) =>
+            i % 2 === 1 ? <b key={`${name}-${i}`}>{name} </b> : <span key={`${name}-${i}`}>{name} </span>
+          )}
         </div>
       </section>
 
