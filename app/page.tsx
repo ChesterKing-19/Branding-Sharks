@@ -7,7 +7,7 @@ import { Testimonial } from "./components/sections/Testimonial";
 import { FinalCTA } from "./components/sections/FinalCTA";
 import { Footer } from "./components/sections/Footer";
 import ScrollToTopButton from "./components/ui/ScrollToTopButton";
-import { CustomCursor } from "./components/effects/CustomCursor";
+import ClickSpark from "./components/effects/ClickSpark";
 
 // Below-the-fold WebGL is split into separate chunks so the hero stays eager.
 // dynamic() without ssr:false keeps SSR output (content visible + indexable)
@@ -61,7 +61,23 @@ const Work = dynamic(
 
 export default function Home() {
   return (
-    <>
+    <ClickSpark
+      sparkColor="#A8C814"
+      sparkSize={16}
+      sparkRadius={50}
+      sparkCount={12}
+      sparkWidth={2}
+      duration={650}
+      easing="ease-out"
+      shape="streak"
+      randomness={0.2}
+      gravity={0}
+      spread={360}
+      direction={0}
+      glow={0.5}
+      ring={false}
+      layer="front"
+    >
       <LiquidHeader />
       <Header />
       <main>
@@ -75,7 +91,6 @@ export default function Home() {
       </main>
       <Footer />
       <ScrollToTopButton />
-      <CustomCursor />
-    </>
+    </ClickSpark>
   );
 }

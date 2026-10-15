@@ -13,7 +13,7 @@ import { WorkReelOverlay } from "../effects/WorkReelOverlay";
 export function WorkMobileSpiral() {
   const [reel, setReel] = useState<ProjectItem | null>(null);
 
-  // Duplicate the 5 projects so the helix (cardsPerTurn=4) stays dense.
+  // Duplicate the 5 projects so the helix (cardsPerTurn=7) stays dense.
   const loop = useMemo(() => [...PROJECTS, ...PROJECTS], []);
   const images = useMemo(() => loop.map((p) => ({ src: p.src, alt: p.alt })), [loop]);
 
@@ -35,7 +35,7 @@ export function WorkMobileSpiral() {
           cardTilt={10}
           radius={110}
           verticalSpacing={52}
-          cardsPerTurn={4}
+          cardsPerTurn={7}
           perspective={900}
           centerScale={1.2}
           edgeFade={0.35}

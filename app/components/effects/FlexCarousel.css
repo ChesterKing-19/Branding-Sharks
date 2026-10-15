@@ -16,6 +16,13 @@
   cursor: zoom-in;
 }
 
+.flex-carousel[data-hover='play'] {
+  cursor:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M13 9 L13 23 L24 16 Z' fill='%23A8C814' stroke='%23222426' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E")
+      17 16,
+    pointer;
+}
+
 .flex-carousel[data-hover='close'] {
   cursor: zoom-out;
 }

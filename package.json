@@ -15,14 +15,12 @@
     "next": "^15.5.25",
     "ogl": "^1.0.11",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "three": "^0.180.0"
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/three": "^0.180.0",
     "typescript": "^5"
   },
   "overrides": {

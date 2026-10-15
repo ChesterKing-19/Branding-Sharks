@@ -1143,7 +1143,7 @@ const FlexCarousel = ({
           inst => pointer.x >= inst.x0 && pointer.x <= inst.x1 && pointer.y >= inst.y0 && pointer.y <= inst.y1
         );
         if (focus.target > 0) nextHover = 'close';
-        else if (hit) nextHover = 'open';
+        else if (hit) nextHover = slots[hit.index]?.item.videoSrc ? 'play' : 'open';
       }
       if (nextHover !== hover) {
         hover = nextHover;

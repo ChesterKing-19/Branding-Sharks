@@ -1281,18 +1281,3 @@ body.menu-open .scroll-to-top {
     transition: none;
   }
 }
-
-/* --- blob custom cursor: hide native cursor on fine pointers only while active --- */
-@media (pointer: fine) {
-  html.blob-cursor,
-  html.blob-cursor *,
-  html.blob-cursor *::before,
-  html.blob-cursor *::after {
-    cursor: none !important;
-  }
-
-  html.blob-cursor input,
-  html.blob-cursor textarea {
-    cursor: text !important;
-  }
-}
