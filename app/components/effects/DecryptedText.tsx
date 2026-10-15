@@ -5,23 +5,38 @@ import { motion, useReducedMotion } from "motion/react";
 import type { CSSProperties } from "react";
 import type { HTMLMotionProps } from "motion/react";
 
-const styles: { wrapper: CSSProperties; srOnly: CSSProperties } = {
+const styles: { wrapper: CSSProperties } = {
   wrapper: {
     display: "inline-block",
     whiteSpace: "pre-wrap",
   },
-  srOnly: {
-    position: "absolute",
-    width: "1px",
-    height: "1px",
-    padding: 0,
-    margin: "-1px",
-    overflow: "hidden",
-    clip: "rect(0,0,0,0)",
-    border: 0,
-    visibility: "hidden",
-  },
 };
+
+function deterministicEncryptedText(
+  text: string,
+  characters: string,
+  useOriginalCharsOnly: boolean
+) {
+  const availableChars = useOriginalCharsOnly
+    ? Array.from(new Set(text)).filter((char) => char !== " ")
+    : Array.from(characters);
+
+  if (availableChars.length === 0) return text;
+
+  let seed = 2166136261;
+  for (const char of `${text}:${characters}`) {
+    seed ^= char.charCodeAt(0);
+    seed = Math.imul(seed, 16777619);
+  }
+
+  return Array.from(text)
+    .map((char, index) => {
+      if (char === " ") return char;
+      const hash = (seed + Math.imul(index + 1, 0x9e3779b1)) >>> 0;
+      return availableChars[hash % availableChars.length];
+    })
+    .join("");
+}
 
 interface DecryptedTextProps
   extends Omit<HTMLMotionProps<"span">, "className" | "children" | "ref"> {
@@ -38,6 +53,8 @@ interface DecryptedTextProps
   encryptedClassName?: string;
   animateOn?: "view" | "hover" | "inViewHover" | "click";
   clickMode?: "once" | "toggle";
+  /** Holds view-triggered animation until the surrounding scene is ready. */
+  start?: boolean;
 }
 
 export default function DecryptedText({
@@ -54,12 +71,20 @@ export default function DecryptedText({
   encryptedClassName = "",
   animateOn = "hover",
   clickMode = "once",
+  start = true,
   ...props
 }: DecryptedTextProps) {
-  const [displayText, setDisplayText] = useState(text);
+  const isViewTriggered = animateOn === "view" || animateOn === "inViewHover";
+  const initialEncryptedText = useMemo(
+    () => deterministicEncryptedText(text, characters, useOriginalCharsOnly),
+    [text, characters, useOriginalCharsOnly]
+  );
+  const [displayText, setDisplayText] = useState(() =>
+    isViewTriggered ? initialEncryptedText : text
+  );
   const [isAnimating, setIsAnimating] = useState(false);
   const [revealedIndices, setRevealedIndices] = useState(new Set<number>());
-  const [isDecrypted, setIsDecrypted] = useState(animateOn !== "click");
+  const [isDecrypted, setIsDecrypted] = useState(() => !isViewTriggered && animateOn !== "click");
   const hasAnimatedRef = useRef(false);
   const [direction, setDirection] = useState<"forward" | "reverse">("forward");
 
@@ -326,9 +351,8 @@ export default function DecryptedText({
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting && !hasAnimatedRef.current) {
+        if (entry.isIntersecting && start && !hasAnimatedRef.current) {
           hasAnimatedRef.current = true;
-          encryptInstantly();
           if (delay > 0) {
             startTimerRef.current = window.setTimeout(() => triggerDecrypt(), delay);
           } else {
@@ -356,18 +380,30 @@ export default function DecryptedText({
         observer.unobserve(currentRef);
       }
     };
-  }, [animateOn, triggerDecrypt, encryptInstantly, delay, reduceMotion, text, commitRevealed]);
+  }, [animateOn, triggerDecrypt, delay, reduceMotion, start]);
 
   useEffect(() => {
     if (animateOn === "click") {
       encryptInstantly();
+    } else if (isViewTriggered) {
+      // This value is deterministic, so server HTML and the first client render
+      // agree. The visible heading never flashes as plaintext before scrambling.
+      commitRevealed(new Set<number>(), initialEncryptedText);
+      setIsDecrypted(false);
     } else {
       setDisplayText(text);
       setIsDecrypted(true);
     }
     commitRevealed(new Set<number>());
     setDirection("forward");
-  }, [animateOn, text, encryptInstantly, commitRevealed]);
+  }, [
+    animateOn,
+    text,
+    encryptInstantly,
+    commitRevealed,
+    initialEncryptedText,
+    isViewTriggered,
+  ]);
 
   const animateProps:
     | { onMouseEnter: () => void; onMouseLeave: () => void }
@@ -391,9 +427,8 @@ export default function DecryptedText({
       style={styles.wrapper}
       {...animateProps}
       {...props}
+      aria-label={text}
     >
-      <span style={styles.srOnly}>{displayText}</span>
-
       <span aria-hidden="true">
         {displayText.split("").map((char, index) => {
           const isRevealedOrDone =

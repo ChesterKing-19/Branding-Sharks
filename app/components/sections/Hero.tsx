@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import DecryptedText from "../effects/DecryptedText";
 
@@ -15,11 +15,14 @@ const headlineLines = [
 ];
 
 const HERO_COLORS = ["#8EAD10", "#6B870D", "#A8C814"];
+const HERO_INTRO_FALLBACK_MS = 1200;
 
 export function Hero() {
   const heroRef = useRef<HTMLElement>(null);
   const [heroInView, setHeroInView] = useState(true);
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [introStarted, setIntroStarted] = useState(false);
+  const startIntro = useCallback(() => setIntroStarted(true), []);
 
   useEffect(() => {
     if (typeof window !== "undefined" && typeof window.matchMedia === "function") {
@@ -80,6 +83,14 @@ export function Hero() {
     };
   }, [reduceMotion]);
 
+  useEffect(() => {
+    if (reduceMotion || introStarted) return;
+
+    // Do not leave the headline encrypted if a browser cannot initialize WebGL.
+    const fallback = window.setTimeout(startIntro, HERO_INTRO_FALLBACK_MS);
+    return () => window.clearTimeout(fallback);
+  }, [introStarted, reduceMotion, startIntro]);
+
   return (
     <section id="top" ref={heroRef} className="ocean-hero" aria-labelledby="hero-title">
       <Ferrofluid
@@ -99,6 +110,7 @@ export function Hero() {
         mouseStrength={0.5}
         mouseRadius={0.2}
         paused={!heroInView || reduceMotion}
+        onFirstFrame={startIntro}
       />
 
       <div className="hero-content">
@@ -120,6 +132,7 @@ export function Hero() {
                   delay={index * 400}
                   characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                   encryptedClassName="hero-line__enc"
+                  start={introStarted}
                 />
               )}
             </span>

@@ -25,6 +25,8 @@ export interface FerrofluidProps {
   mouseRadius?: number;
   mouseDampening?: number;
   mixBlendMode?: string;
+  /** Called after the first WebGL frame has had a chance to paint hidden. */
+  onFirstFrame?: () => void;
 }
 
 type RGB = [number, number, number];
@@ -231,7 +233,8 @@ const Ferrofluid: FC<FerrofluidProps> = ({
   mouseStrength = 1,
   mouseRadius = 0.35,
   mouseDampening = 0.15,
-  mixBlendMode
+  mixBlendMode,
+  onFirstFrame,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -245,10 +248,16 @@ const Ferrofluid: FC<FerrofluidProps> = ({
   const contextLostRef = useRef(false);
   const renderErrorLoggedRef = useRef(false);
   const loopRef = useRef<FrameRequestCallback | null>(null);
+  const revealFrameRef = useRef<number | null>(null);
+  const onFirstFrameRef = useRef(onFirstFrame);
   // Becomes true after the first successful WebGL frame so the canvas
   // can fade in over the static backdrop instead of popping.
   const [ready, setReady] = useState(false);
   const readyRef = useRef(false);
+
+  useEffect(() => {
+    onFirstFrameRef.current = onFirstFrame;
+  }, [onFirstFrame]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -336,6 +345,10 @@ const Ferrofluid: FC<FerrofluidProps> = ({
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
       contextLostRef.current = true;
+      if (revealFrameRef.current) cancelAnimationFrame(revealFrameRef.current);
+      revealFrameRef.current = null;
+      readyRef.current = false;
+      setReady(false);
     };
     const onContextRestored = () => {
       contextLostRef.current = false;
@@ -374,7 +387,13 @@ const Ferrofluid: FC<FerrofluidProps> = ({
           renderer.render({ scene: meshRef.current });
           if (!readyRef.current) {
             readyRef.current = true;
-            setReady(true);
+            // This callback runs after the browser has painted the canvas at
+            // opacity: 0, letting the CSS transition fade it in reliably.
+            revealFrameRef.current = requestAnimationFrame(() => {
+              revealFrameRef.current = null;
+              setReady(true);
+              onFirstFrameRef.current?.();
+            });
           }
         } catch {
           // Log once; the loop would otherwise spam every frame on context loss.
@@ -398,6 +417,8 @@ const Ferrofluid: FC<FerrofluidProps> = ({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
+      if (revealFrameRef.current) cancelAnimationFrame(revealFrameRef.current);
+      revealFrameRef.current = null;
       loopRef.current = null;
       if (mouseInteraction) canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("webglcontextlost", onContextLost);
