@@ -311,6 +311,30 @@ h2 {
   color: #fff;
 }
 
+/* Loading hold for the mobile spiral branch (its chunk arrives after
+   mount): same footprint as the helix stage so layout never jumps,
+   calm pulse instead of a blank gap. */
+.work-carousel.work-carousel--loading {
+  height: clamp(520px, 78svh, 700px);
+  border-radius: 24px;
+  background:
+    radial-gradient(60% 50% at 50% 40%, rgba(168, 200, 20, 0.08), transparent 70%),
+    #0c0e0e;
+  animation: work-loading-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes work-loading-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-carousel.work-carousel--loading {
+    animation: none;
+  }
+}
+
 /* --- quote --- */
 .quote {
   padding: 120px 12vw;
@@ -1013,7 +1037,12 @@ button:focus-visible {
   position: relative;
   min-height: 100svh;
   overflow: hidden;
-  background: #111617;
+  /* Static first-paint backdrop approximating the fluid glow, so the hero
+     looks intentional before the WebGL canvas fades in above it. */
+  background:
+    radial-gradient(55% 42% at 78% 30%, rgba(168, 200, 20, 0.14), transparent 70%),
+    radial-gradient(45% 38% at 12% 72%, rgba(142, 173, 16, 0.1), transparent 70%),
+    #111617;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

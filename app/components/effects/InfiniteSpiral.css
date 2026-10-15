@@ -54,8 +54,7 @@
 }
 
 /* Mobile Work wrapper: fixed helix stage, page scroll preserved. */
-.work-carousel--spiral {
-  height: clamp(520px, 78svh, 700px);
+.work-carousel--spiral {  height: clamp(520px, 78svh, 700px);
   touch-action: pan-y;
 }
 

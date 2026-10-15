@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, FC } from "react";
 import { Renderer, Program, Mesh, Triangle } from "ogl";
 import "./Ferrofluid.css";
@@ -245,6 +245,10 @@ const Ferrofluid: FC<FerrofluidProps> = ({
   const contextLostRef = useRef(false);
   const renderErrorLoggedRef = useRef(false);
   const loopRef = useRef<FrameRequestCallback | null>(null);
+  // Becomes true after the first successful WebGL frame so the canvas
+  // can fade in over the static backdrop instead of popping.
+  const [ready, setReady] = useState(false);
+  const readyRef = useRef(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -368,6 +372,10 @@ const Ferrofluid: FC<FerrofluidProps> = ({
       if (programRef.current && meshRef.current && !contextLostRef.current) {
         try {
           renderer.render({ scene: meshRef.current });
+          if (!readyRef.current) {
+            readyRef.current = true;
+            setReady(true);
+          }
         } catch {
           // Log once; the loop would otherwise spam every frame on context loss.
           if (!renderErrorLoggedRef.current) {
@@ -442,7 +450,7 @@ const Ferrofluid: FC<FerrofluidProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`ferrofluid-container ${className ?? ""}`}
+      className={`ferrofluid-container${ready ? " is-ready" : ""} ${className ?? ""}`}
       style={{
         ...(mixBlendMode && { mixBlendMode: mixBlendMode as CSSProperties["mixBlendMode"] })
       }}

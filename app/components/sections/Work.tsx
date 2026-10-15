@@ -7,7 +7,14 @@ import { useMediaQuery } from "../../hooks/useMediaQuery";
 
 const WorkMobileSpiral = dynamic(
   () => import("./WorkMobileSpiral").then((m) => m.WorkMobileSpiral),
-  { ssr: false }
+  {
+    ssr: false,
+    // Mobile branch code arrives after mount; hold layout with a calm
+    // skeleton so the section never flashes empty or jumps in height.
+    loading: () => (
+      <div className="work-carousel work-carousel--loading" aria-hidden="true" />
+    ),
+  }
 );
 
 export function Work() {
