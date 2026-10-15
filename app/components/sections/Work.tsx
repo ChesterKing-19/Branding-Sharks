@@ -1,9 +1,20 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import FlexCarousel from "../effects/FlexCarousel";
 import { PROJECTS } from "../../data/content";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
+
+const WorkMobileSpiral = dynamic(
+  () => import("./WorkMobileSpiral").then((m) => m.WorkMobileSpiral),
+  { ssr: false }
+);
 
 export function Work() {
+  // Mobile (<801px) gets the auto-spinning helix; desktop keeps WebGL.
+  // SSR defaults to desktop to avoid hydration mismatch; the mobile
+  // branch mounts client-only via dynamic(ssr:false).
+  const isMobile = useMediaQuery("(max-width: 800px)");
   return (
     <section className="work section" id="work">
       <div className="work-head">
@@ -16,13 +27,17 @@ export function Work() {
         <p>Slide through the currents. Each story was built to make an impact.</p>
       </div>
 
-      <div className="work-carousel">
-        {/*
-          Cards with a `videoSrc` play inline on focus-zoom
-          (see effects/FlexCarouselReel); others zoom as before.
-        */}
-        <FlexCarousel items={PROJECTS} preset="liquid" captions fit="portrait" cardHeight={0.8} />
-      </div>
+      {isMobile ? (
+        <WorkMobileSpiral />
+      ) : (
+        <div className="work-carousel">
+          {/*
+            Cards with a `videoSrc` play inline on focus-zoom
+            (see effects/FlexCarouselReel); others zoom as before.
+          */}
+          <FlexCarousel items={PROJECTS} preset="liquid" captions fit="portrait" cardHeight={0.8} />
+        </div>
+      )}
     </section>
   );
 }
