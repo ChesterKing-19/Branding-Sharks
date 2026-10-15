@@ -1049,7 +1049,7 @@ button:focus-visible {
   padding: 34px 5vw 32px;
 }
 
-.ocean-hero .hero-ferrofluid {
+.ocean-hero .hero-flux-lines {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -1099,6 +1099,10 @@ button:focus-visible {
   width: fit-content;
   color: #f8faf8;
   text-shadow: 0 10px 34px rgba(0, 0, 0, 0.25);
+  /* Bound each tick's layout invalidation to the line itself so the
+     scramble never re-lays-out the hero around it. Paint is untouched
+     (shadows/glow must not clip), only layout is contained. */
+  contain: layout;
 }
 
 .hero-line-one {

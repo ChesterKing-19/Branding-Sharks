@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import DecryptedText from "../effects/DecryptedText";
 
-const Ferrofluid = dynamic(() => import("../effects/Ferrofluid"), {
+const FluxLines = dynamic(() => import("../effects/FluxLines"), {
   ssr: false,
 });
 
@@ -14,7 +14,7 @@ const headlineLines = [
   { text: "GET NOTICED.", className: "hero-line hero-line-three" },
 ];
 
-const HERO_COLORS = ["#8EAD10", "#6B870D", "#A8C814"];
+const HERO_COLORS = ["#a8c814", "#8ead10", "#6b870d"];
 
 export function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -82,24 +82,27 @@ export function Hero() {
 
   return (
     <section id="top" ref={heroRef} className="ocean-hero" aria-labelledby="hero-title">
-      <Ferrofluid
-        className="hero-ferrofluid"
+      <FluxLines
+        className="hero-flux-lines"
         colors={HERO_COLORS}
-        speed={0.2}
-        scale={1.4}
-        turbulence={0.6}
-        fluidity={0.12}
-        rimWidth={0.22}
+        speed={0.5}
+        scale={1.3}
+        turbulence={1}
+        fluidity={0.02}
+        rimWidth={0.2}
         sharpness={2.5}
         shimmer={1.0}
-        glow={3.0}
+        glow={2}
+        lineWidth={1}
         flowDirection="down"
         opacity={1}
         mouseInteraction
-        mouseStrength={0.5}
-        mouseRadius={0.2}
+        mouseStrength={1}
+        mouseRadius={0.27}
+        clickSwirl={false}
+        intro
+        transparent
         paused={!heroInView || reduceMotion}
-        stabilizeOnMobile
       />
 
       <div className="hero-content">

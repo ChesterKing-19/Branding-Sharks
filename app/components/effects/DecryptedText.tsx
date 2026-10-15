@@ -1,6 +1,14 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { motion } from "motion/react";
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from "react";
 import type { HTMLMotionProps } from "motion/react";
@@ -128,6 +136,105 @@ interface Engine {
   ensureTicker: () => void;
   refit: () => void;
 }
+
+interface CharCellProps {
+  char: string;
+  shown: string;
+  revealed: boolean;
+  squeeze: number;
+  tint: number;
+  dim: number;
+  className: string;
+  encryptedClassName: string;
+  flipping: boolean;
+  settling: boolean;
+  tinted: boolean;
+  fading: boolean;
+  scrambleColor: string;
+  step: number;
+  index: number;
+  cellsRef: { current: (HTMLSpanElement | null)[] };
+}
+
+/**
+ * Memoized on primitive props so each ticker frame re-renders only cells
+ * whose glyph or reveal state actually changed — the rest skip entirely.
+ * DOM shape is identical to the unmemoized version (ghost layout lock kept).
+ */
+const CharCell = memo(function CharCell({
+  char,
+  shown,
+  revealed,
+  squeeze,
+  tint,
+  dim,
+  className,
+  encryptedClassName,
+  flipping,
+  settling,
+  tinted,
+  fading,
+  scrambleColor,
+  step,
+  index,
+  cellsRef,
+}: CharCellProps) {
+  const setRef = useCallback(
+    (node: HTMLSpanElement | null) => {
+      cellsRef.current[index] = node;
+    },
+    [cellsRef, index]
+  );
+
+  const style = useMemo((): CSSProperties => {
+    const s: CSSProperties =
+      revealed && !flipping ? {} : { ...styles.cell };
+    if (settling)
+      s.transition = revealed
+        ? SETTLE
+        : `color 0.12s linear, opacity ${step}ms linear`;
+    if (tinted && !revealed) {
+      const amount = Math.round(tint * 100);
+      s.color =
+        amount >= 100
+          ? scrambleColor
+          : `color-mix(in srgb, ${scrambleColor} ${amount}%, currentColor)`;
+    }
+    if (fading) s.opacity = revealed ? 1 : dim;
+    return s;
+  }, [
+    revealed,
+    flipping,
+    settling,
+    step,
+    tinted,
+    tint,
+    scrambleColor,
+    fading,
+    dim,
+  ]);
+
+  const glyphSt = useMemo((): CSSProperties => {
+    return squeeze < 1
+      ? { ...styles.glyph, transform: `translateX(-50%) scaleX(${squeeze})` }
+      : styles.glyph;
+  }, [squeeze]);
+
+  return (
+    <span ref={setRef} className={className} style={style}>
+      {revealed ? (
+        char
+      ) : (
+        <>
+          <span style={styles.ghost}>{char}</span>
+          <span className={encryptedClassName} style={glyphSt}>
+            {shown}
+          </span>
+        </>
+      )}
+    </span>
+  );
+});
 
 interface DecryptedTextProps
   extends Omit<HTMLMotionProps<"span">, "className" | "children" | "ref"> {
@@ -687,32 +794,7 @@ export default function DecryptedText({
   const tinted = Boolean(scrambleColor);
   const fading = effect === "fade";
   const flipping = effect === "flip";
-  const settles = tinted || fading;
-
-  const glyphStyle = (index: number): CSSProperties => {
-    const squeeze = frame.squeeze[index] ?? 1;
-    return squeeze < 1
-      ? { ...styles.glyph, transform: `translateX(-50%) scaleX(${squeeze})` }
-      : styles.glyph;
-  };
-
-  const cellStyle = (index: number, revealed: boolean): CSSProperties => {
-    const style: CSSProperties =
-      revealed && !flipping ? {} : { ...styles.cell };
-    if (settles)
-      style.transition = revealed
-        ? SETTLE
-        : `color 0.12s linear, opacity ${step}ms linear`;
-    if (tinted && !revealed) {
-      const amount = Math.round((frame.tint[index] ?? 1) * 100);
-      style.color =
-        amount >= 100
-          ? scrambleColor
-          : `color-mix(in srgb, ${scrambleColor} ${amount}%, currentColor)`;
-    }
-    if (fading) style.opacity = revealed ? 1 : (frame.dim[index] ?? FADE_FLOOR);
-    return style;
-  };
+  const settling = tinted || fading;
 
   const animateProps:
     | {
@@ -749,31 +831,27 @@ export default function DecryptedText({
             group
           ) : (
             <span key={group.key} style={styles.word}>
-              {group.letters.map((index) => {
-                const char = chars[index];
-                const revealed = frame.revealed[index] ?? true;
-                return (
-                  <span
-                    key={index}
-                    ref={(node) => {
-                      cellsRef.current[index] = node;
-                    }}
-                    className={revealed ? className : encryptedClassName}
-                    style={cellStyle(index, revealed)}
-                  >
-                    {revealed ? (
-                      char
-                    ) : (
-                      <>
-                        <span style={styles.ghost}>{char}</span>
-                        <span style={glyphStyle(index)}>
-                          {frame.shown[index] ?? char}
-                        </span>
-                      </>
-                    )}
-                  </span>
-                );
-              })}
+              {group.letters.map((index) => (
+                <CharCell
+                  key={index}
+                  index={index}
+                  char={chars[index]}
+                  shown={frame.shown[index] ?? chars[index]}
+                  revealed={frame.revealed[index] ?? true}
+                  squeeze={frame.squeeze[index] ?? 1}
+                  tint={frame.tint[index] ?? 1}
+                  dim={frame.dim[index] ?? FADE_FLOOR}
+                  className={className}
+                  encryptedClassName={encryptedClassName}
+                  flipping={flipping}
+                  settling={settling}
+                  tinted={tinted}
+                  fading={fading}
+                  scrambleColor={scrambleColor}
+                  step={step}
+                  cellsRef={cellsRef}
+                />
+              ))}
             </span>
           )
         )}
