@@ -3,3 +3,8 @@ node_modules/
 .next-dev/
 *.tsbuildinfo
 .env*
+
+# Local AI agent tooling (ECC install) — machine-specific, not part of the product
+.agents/
+.opencode/
+.claude/
