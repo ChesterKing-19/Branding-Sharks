@@ -25,8 +25,6 @@ export interface FerrofluidProps {
   mouseRadius?: number;
   mouseDampening?: number;
   mixBlendMode?: string;
-  /** Called after the first WebGL frame has had a chance to paint hidden. */
-  onFirstFrame?: () => void;
   /** Opt-in mobile startup warm-up; desktop timing is unchanged. */
   stabilizeOnMobile?: boolean;
 }
@@ -236,7 +234,6 @@ const Ferrofluid: FC<FerrofluidProps> = ({
   mouseRadius = 0.35,
   mouseDampening = 0.15,
   mixBlendMode,
-  onFirstFrame,
   stabilizeOnMobile = false,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -252,15 +249,10 @@ const Ferrofluid: FC<FerrofluidProps> = ({
   const renderErrorLoggedRef = useRef(false);
   const loopRef = useRef<FrameRequestCallback | null>(null);
   const revealFrameRef = useRef<number | null>(null);
-  const onFirstFrameRef = useRef(onFirstFrame);
   // Becomes true after the first successful WebGL frame so the canvas
   // can fade in over the static backdrop instead of popping.
   const [ready, setReady] = useState(false);
   const readyRef = useRef(false);
-
-  useEffect(() => {
-    onFirstFrameRef.current = onFirstFrame;
-  }, [onFirstFrame]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -333,14 +325,6 @@ const Ferrofluid: FC<FerrofluidProps> = ({
       }
     };
 
-    const resetWarmup = () => {
-      // Once the canvas is visible, regular resize/rotation should not cause
-      // another fade. Context loss explicitly resets the visible state below.
-      if (readyRef.current) return;
-      renderedStableFrames = 0;
-      cancelPendingReveal();
-    };
-
     const resize = (force = false) => {
       const rect = container.getBoundingClientRect();
       const width = Math.round(rect.width);
@@ -351,7 +335,9 @@ const Ferrofluid: FC<FerrofluidProps> = ({
       measuredHeight = height;
       renderer.setSize(width, height);
       uniforms.iResolution.value = [gl.drawingBufferWidth, gl.drawingBufferHeight, 1];
-      resetWarmup();
+      // NOTE: intentionally no warm-up reset here. A resize (URL bar,
+      // rotation) during the reveal countdown must not postpone the fade;
+      // the counter keeps counting rendered frames only.
     };
 
     resize();
@@ -432,7 +418,6 @@ const Ferrofluid: FC<FerrofluidProps> = ({
 
                 readyRef.current = true;
                 setReady(true);
-                onFirstFrameRef.current?.();
               });
             }
           }

@@ -53,8 +53,6 @@ interface DecryptedTextProps
   encryptedClassName?: string;
   animateOn?: "view" | "hover" | "inViewHover" | "click";
   clickMode?: "once" | "toggle";
-  /** Holds view-triggered animation until the surrounding scene is ready. */
-  start?: boolean;
 }
 
 export default function DecryptedText({
@@ -71,7 +69,6 @@ export default function DecryptedText({
   encryptedClassName = "",
   animateOn = "hover",
   clickMode = "once",
-  start = true,
   ...props
 }: DecryptedTextProps) {
   const isViewTriggered = animateOn === "view" || animateOn === "inViewHover";
@@ -351,7 +348,7 @@ export default function DecryptedText({
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting && start && !hasAnimatedRef.current) {
+        if (entry.isIntersecting && !hasAnimatedRef.current) {
           hasAnimatedRef.current = true;
           if (delay > 0) {
             startTimerRef.current = window.setTimeout(() => triggerDecrypt(), delay);
@@ -380,7 +377,7 @@ export default function DecryptedText({
         observer.unobserve(currentRef);
       }
     };
-  }, [animateOn, triggerDecrypt, delay, reduceMotion, start]);
+  }, [animateOn, triggerDecrypt, delay, reduceMotion]);
 
   useEffect(() => {
     if (animateOn === "click") {
