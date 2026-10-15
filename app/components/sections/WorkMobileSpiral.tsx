@@ -30,13 +30,13 @@ export function WorkMobileSpiral() {
           animationMode="auto"
           speed={0.5}
           direction="up"
-          cardWidth={100}
-          cardHeight={164}
+          cardWidth={110}
+          cardHeight={180}
           cardTilt={10}
           radius={110}
-          verticalSpacing={52}
+          verticalSpacing={70}
           cardsPerTurn={7}
-          perspective={900}
+          perspective={1000}
           centerScale={1.2}
           edgeFade={0.35}
           edgeBlur={4}

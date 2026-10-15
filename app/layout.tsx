@@ -48,6 +48,7 @@ export const metadata: Metadata = {
   description:
     "Branding Sharks is a full-service marketing and advertising agency helping ambitious brands build attention, create demand and drive measurable growth.",
   robots: { index: true, follow: true },
+  icons: { icon: "/media/logo/logo-bs-480.webp" },
 };
 
 export const viewport: Viewport = {
