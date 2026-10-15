@@ -1,6 +1,6 @@
 'use client';
 
-import type { CSSProperties } from 'react';
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import { formatTime, type VideoState } from './useVideoState';
 
 interface VideoControlsProps {
@@ -11,15 +11,23 @@ interface VideoControlsProps {
 
 /**
  * Bespoke minimal player chrome: center play/pause toggle + bottom bar
- * (play/pause, seek slider, time readout, close). Brand tokens only.
+ * (play/pause, seek slider, time readout, mute/volume, close). Brand tokens only.
  */
 export function VideoControls({ state, title, onClose }: VideoControlsProps) {
-  const { playing, time, duration, buffered, waiting, idle, toggle, seek } = state;
+  const { playing, time, duration, buffered, waiting, idle, muted, volume, toggle, seek, toggleMute, setVolume } = state;
+  const level = muted ? 0 : volume;
   const chromeHidden = idle && playing;
   // Spinner only for initial load — never over a playable frame.
   const loading = waiting && !playing && !(duration > 0);
   const progress = duration > 0 ? Math.min(1, time / duration) : 0;
   const bufferedPct = duration > 0 ? Math.min(1, buffered / duration) : 0;
+
+  const dropFocus = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const active = document.activeElement;
+    if (active instanceof HTMLElement && e.currentTarget.contains(active)) {
+      active.blur();
+    }
+  };
 
   return (
     <>
@@ -86,6 +94,56 @@ export function VideoControls({ state, title, onClose }: VideoControlsProps) {
           style={{ '--vui-progress': progress, '--vui-buffered': bufferedPct } as CSSProperties}
         />
         <span className="vui-time">{formatTime(duration)}</span>
+        <div className="vui-volume" onPointerUp={dropFocus} onPointerLeave={dropFocus}>
+          <button
+            type="button"
+            className="vui-btn vui-mute"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleMute();
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            aria-label={muted ? `Unmute ${title}` : `Mute ${title}`}
+            aria-pressed={muted}
+          >
+            {muted ? (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 9v6h4l5 4V5L8 9H4Z" fill="currentColor" />
+                <path
+                  d="M16.5 9.5l4 5M20.5 9.5l-4 5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 9v6h4l5 4V5L8 9H4Z" fill="currentColor" />
+                <path
+                  d="M16 9a4 4 0 0 1 0 6M18.6 6.6a8 8 0 0 1 0 10.8"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            )}
+          </button>
+          <input
+            type="range"
+            className="vui-vol"
+            min={0}
+            max={1}
+            step={0.01}
+            value={level}
+            onChange={(e) => setVolume(Number(e.target.value))}
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+            aria-label={`Volume ${title}`}
+            aria-valuetext={`${Math.round(level * 100)}%`}
+            style={{ '--vui-volume': level } as CSSProperties}
+          />
+        </div>
         <button
           type="button"
           className="vui-btn"

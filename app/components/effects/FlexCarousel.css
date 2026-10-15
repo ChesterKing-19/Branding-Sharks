@@ -367,16 +367,84 @@
   border: 0;
 }
 
+.vui-volume {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+/* Collapsed until the speaker is hovered/focused; stays open while the
+   pointer is over the slider itself (shared hover container). */
+.vui-vol {
+  flex: none;
+  width: 0;
+  margin-left: 0;
+  opacity: 0;
+  pointer-events: none;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      to right,
+      var(--lime) 0 calc(var(--vui-volume, 0) * 100%),
+      rgba(255, 255, 255, 0.28) calc(var(--vui-volume, 0) * 100%)
+    );
+  outline-offset: 4px;
+  cursor: pointer;
+  transition: width 220ms ease, margin-left 220ms ease, opacity 160ms ease;
+}
+
+.vui-volume:hover .vui-vol,
+.vui-volume:focus-within .vui-vol {
+  width: 76px;
+  margin-left: 8px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.vui-vol::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--lime);
+  border: 0;
+}
+
+.vui-vol::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--lime);
+  border: 0;
+}
+
 .vui-center:focus-visible,
 .vui-btn:focus-visible,
-.vui-seek:focus-visible {
+.vui-seek:focus-visible,
+.vui-vol:focus-visible {
   outline: 2px solid var(--lime);
   outline-offset: 3px;
+}
+
+/* Hardware volume buttons cover small/coarse-pointer screens; drop the
+   inline slider there so the bar stays uncluttered (mute stays). */
+@media (max-width: 560px), (pointer: coarse) {
+  .vui-vol {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .flex-reel-box .vui-center,
   .flex-reel-box .vui-bar {
+    transition: none;
+  }
+
+  .vui-vol {
     transition: none;
   }
 

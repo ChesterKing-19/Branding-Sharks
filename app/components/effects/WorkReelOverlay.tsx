@@ -110,6 +110,8 @@ export function WorkReelOverlay({ item, onClose }: WorkReelOverlayProps) {
           src={item.videoSrc}
           poster={item.poster ?? item.src}
           autoPlay
+          loop
+          muted
           playsInline
           preload="metadata"
           tabIndex={0}

@@ -9,10 +9,14 @@ export interface VideoState {
   buffered: number;
   waiting: boolean;
   idle: boolean;
+  muted: boolean;
+  volume: number;
   /** Callback ref for the <video> element. Attaches listeners on mount. */
   setVideoNode: (node: HTMLVideoElement | null) => void;
   toggle: () => void;
   seek: (to: number) => void;
+  toggleMute: () => void;
+  setVolume: (value: number) => void;
   poke: () => void;
 }
 
@@ -40,6 +44,8 @@ export function useVideoState(): VideoState {
   const [buffered, setBuffered] = useState(0);
   const [waiting, setWaiting] = useState(true);
   const [idle, setIdle] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const [volume, setVolumeState] = useState(1);
   const idleTimer = useRef(0);
   const nodeRef = useRef<HTMLVideoElement | null>(null);
   nodeRef.current = node;
@@ -65,6 +71,11 @@ export function useVideoState(): VideoState {
     setTime(v.currentTime || 0);
     setDuration(v.duration || 0);
     setWaiting(v.readyState < 3);
+    // Autoplay must start muted (browser policy); the chrome exposes unmute.
+    v.muted = true;
+    setMuted(true);
+    setVolumeState(v.volume);
+    if (v.paused) void v.play().catch(() => {});
     const onPlay = () => {
       setPlaying(true);
       poke();
@@ -89,6 +100,10 @@ export function useVideoState(): VideoState {
     };
     const onWait = () => setWaiting(true);
     const onReady = () => setWaiting(false);
+    const onVolume = () => {
+      setMuted(v.muted);
+      setVolumeState(v.volume);
+    };
     v.addEventListener('play', onPlay);
     v.addEventListener('pause', onPause);
     v.addEventListener('timeupdate', onTime);
@@ -98,6 +113,7 @@ export function useVideoState(): VideoState {
     v.addEventListener('waiting', onWait);
     v.addEventListener('playing', onReady);
     v.addEventListener('canplay', onReady);
+    v.addEventListener('volumechange', onVolume);
     return () => {
       v.removeEventListener('play', onPlay);
       v.removeEventListener('pause', onPause);
@@ -108,6 +124,7 @@ export function useVideoState(): VideoState {
       v.removeEventListener('waiting', onWait);
       v.removeEventListener('playing', onReady);
       v.removeEventListener('canplay', onReady);
+      v.removeEventListener('volumechange', onVolume);
       window.clearTimeout(idleTimer.current);
     };
   }, [node, poke]);
@@ -131,5 +148,44 @@ export function useVideoState(): VideoState {
     [poke]
   );
 
-  return { playing, time, duration, buffered, waiting, idle, setVideoNode, toggle, seek, poke };
+  const toggleMute = useCallback(() => {
+    const v = nodeRef.current;
+    if (!v) return;
+    if (v.muted || v.volume === 0) {
+      if (v.volume === 0) v.volume = 1;
+      v.muted = false;
+    } else {
+      v.muted = true;
+    }
+    poke();
+  }, [poke]);
+
+  const setVolume = useCallback(
+    (value: number) => {
+      const v = nodeRef.current;
+      if (!v) return;
+      const next = Math.min(1, Math.max(0, value));
+      v.volume = next;
+      v.muted = next === 0;
+      poke();
+    },
+    [poke]
+  );
+
+  return {
+    playing,
+    time,
+    duration,
+    buffered,
+    waiting,
+    idle,
+    muted,
+    volume,
+    setVideoNode,
+    toggle,
+    seek,
+    toggleMute,
+    setVolume,
+    poke,
+  };
 }

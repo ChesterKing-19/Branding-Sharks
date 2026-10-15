@@ -255,6 +255,8 @@ export function FlexCarouselReel({ item, engineRef, hostRef, onClose }: FlexCaro
           src={item.videoSrc}
           poster={item.poster ?? item.src}
           autoPlay
+          loop
+          muted
           playsInline
           preload="metadata"
           tabIndex={0}
