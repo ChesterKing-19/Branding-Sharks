@@ -111,6 +111,7 @@ export function Hero() {
         mouseRadius={0.2}
         paused={!heroInView || reduceMotion}
         onFirstFrame={startIntro}
+        stabilizeOnMobile
       />
 
       <div className="hero-content">
