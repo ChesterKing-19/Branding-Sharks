@@ -71,10 +71,10 @@ export function WorkMobileSpiral() {
           orientation="vertical"
           trigger="click"
           defaultIndex={0}
-          height={360}
+          height={420}
           gap={10}
           radius={16}
-          expandRatio={0.55}
+          expandRatio={0.6}
           accentColor="#a8c814"
           overlayColor="#060010"
           textColor="#ffffff"

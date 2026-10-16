@@ -94,6 +94,10 @@ const AccordionGallery = ({
   const vertical = orientation === 'vertical';
   const count = items.length;
   const [active, setActive] = useState(Math.min(Math.max(defaultIndex, 0), count - 1));
+  // First-paint flex share for the default-active panel, so the first card
+  // renders expanded even before gsap's first applyLayout runs.
+  const clampedRatio = Math.min(Math.max(expandRatio, 0.2), 0.9);
+  const activeGrow = count > 1 ? (clampedRatio * (count - 1)) / (1 - clampedRatio) : 1;
 
   const prefersReduced =
     typeof window !== 'undefined' && window.matchMedia
@@ -257,7 +261,7 @@ const AccordionGallery = ({
               panelRefs.current[i] = el;
             }}
             className={`ag-panel${isActive ? ' ag-panel--active' : ''}`}
-            style={{ borderRadius: `${radius}px` }}
+            style={{ borderRadius: `${radius}px`, flexGrow: isActive ? activeGrow : 1 }}
             href={item.link || undefined}
             onClick={e => handleClick(i, e)}
             onMouseEnter={() => handleEnter(i)}

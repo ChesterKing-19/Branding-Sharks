@@ -161,14 +161,32 @@
   margin-left: 2px;
 }
 
+/* First-paint default: the active panel (defaultIndex, first card on mobile)
+   renders expanded with its label visible before gsap's first layout pass. */
+.ag-panel--active .ag-panel__media {
+  --ag-gray: 0;
+  --ag-dim: 0;
+}
+
+.ag-panel--active .ag-panel__bar,
+.ag-panel--active .ag-panel__text {
+  opacity: 1;
+}
+
+.ag-panel:not(.ag-panel--active) .ag-panel__bar,
+.ag-panel:not(.ag-panel--active) .ag-panel__text {
+  opacity: 0;
+  transform: translateX(-14px);
+}
+
 @media (max-width: 520px) {
   .accordion-gallery {
     flex-direction: column;
     perspective: none;
-    height: auto !important;
+    height: clamp(640px, 80svh, 740px) !important;
   }
   .ag-panel {
-    min-height: 84px;
+    min-height: 124px;
     transform: none !important;
   }
   .accordion-gallery .ag-panel__media {

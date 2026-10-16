@@ -316,8 +316,8 @@ h2 {
    side padding aligns panels with the section head. */
 .work-carousel.work-carousel--accordion {
   height: auto;
-  min-height: clamp(520px, 78svh, 700px);
-  padding: 0 22px 8px;
+  min-height: 0;
+  padding: 0 22px;
   overflow: visible;
 }
 
