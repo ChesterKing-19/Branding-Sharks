@@ -5,8 +5,8 @@ import FlexCarousel from "../effects/FlexCarousel";
 import { PROJECTS } from "../../data/content";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 
-const WorkMobileSpiral = dynamic(
-  () => import("./WorkMobileSpiral").then((m) => m.WorkMobileSpiral),
+const WorkMobileAccordion = dynamic(
+  () => import("./WorkMobileAccordion").then((m) => m.WorkMobileAccordion),
   {
     ssr: false,
     // Mobile branch code arrives after mount; hold layout with a calm
@@ -18,7 +18,7 @@ const WorkMobileSpiral = dynamic(
 );
 
 export function Work() {
-  // Mobile (<801px) gets the auto-spinning helix; desktop keeps WebGL.
+  // Mobile (<801px) gets the accordion gallery; desktop keeps WebGL.
   // SSR defaults to desktop to avoid hydration mismatch; the mobile
   // branch mounts client-only via dynamic(ssr:false).
   const isMobile = useMediaQuery("(max-width: 800px)");
@@ -35,7 +35,7 @@ export function Work() {
       </div>
 
       {isMobile ? (
-        <WorkMobileSpiral />
+        <WorkMobileAccordion />
       ) : (
         <div className="work-carousel">
           {/*

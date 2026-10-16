@@ -10,8 +10,8 @@
  *
  * Work-mobile extension (non-breaking): `videoSrc` marks a panel as
  * reel-backed (play badge). Tapping/clicking the already-active panel fires
- * `onActiveSelect(index)` so the host can open the fullscreen reel — the
- * same rule the mobile spiral used (`if (project?.videoSrc) setReel`).
+ * `onActiveSelect(index)` so the host can open the fullscreen reel for
+ * reel-backed cards (`if (project?.videoSrc) setReel`).
  */
 
 import { useRef, useEffect, useState, useCallback, type CSSProperties, type KeyboardEvent, type MouseEvent } from 'react';

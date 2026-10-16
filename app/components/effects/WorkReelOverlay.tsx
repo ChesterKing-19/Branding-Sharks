@@ -23,7 +23,7 @@ interface WorkReelOverlayProps {
  * Standalone fullscreen reel player (no carousel engine required).
  * Shares player chrome + styles with FlexCarouselReel: portalled to
  * document.body, statically centered via CSS, closes on backdrop press
- * or Escape. Used by the mobile Work spiral; desktop keeps its
+ * or Escape. Used by the mobile Work accordion; desktop keeps its
  * morphing FlexCarouselReel.
  */
 export function WorkReelOverlay({ item, onClose }: WorkReelOverlayProps) {

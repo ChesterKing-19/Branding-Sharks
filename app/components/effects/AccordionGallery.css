@@ -6,7 +6,7 @@
  * Panels expand on hover or focus, revealing parallax imagery and captions.
  * Work mobile extension: panels with `videoSrc` show a play badge; tapping
  * the already-active video panel opens the fullscreen reel (see
- * sections/WorkMobileSpiral). Reduced-motion is respected via gsap duration 0.
+ * sections/WorkMobileAccordion). Reduced-motion is respected via gsap duration 0.
  */
 
 .accordion-gallery {
