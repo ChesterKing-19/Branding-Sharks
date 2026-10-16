@@ -311,6 +311,16 @@ h2 {
   color: #fff;
 }
 
+/* Mobile accordion branch: vertical stack replaces the spiral helix.
+   Height is content-driven (AccordionGallery sets its own stacked height);
+   side padding aligns panels with the section head. */
+.work-carousel.work-carousel--accordion {
+  height: auto;
+  min-height: clamp(520px, 78svh, 700px);
+  padding: 0 22px 8px;
+  overflow: visible;
+}
+
 /* Loading hold for the mobile spiral branch (its chunk arrives after
    mount): same footprint as the helix stage so layout never jumps,
    calm pulse instead of a blank gap. */
