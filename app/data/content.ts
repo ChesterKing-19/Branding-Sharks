@@ -65,6 +65,34 @@ export const SERVICES: ServiceItem[] = SERVICE_COPY.map(([title, description], i
 
 export const PROJECTS: ProjectItem[] = [
   {
+    title: "ALBERTA",
+    alt: "ALBERTA Home Furnishing brand campaign",
+    src: "/media/work/alberta-thumbnail.webp",
+    videoSrc: "/media/work/alberta-reel.mp4",
+    poster: "/media/work/alberta-thumbnail.webp",
+  },
+  {
+    title: "TEMPLE GYM",
+    alt: "TEMPLE GYM brand identity and site signage",
+    src: "/media/work/templegym-thumbnail.webp",
+    videoSrc: "/media/work/templegym-reel.mp4",
+    poster: "/media/work/templegym-thumbnail.webp",
+  },
+  {
+    title: "TRIUMPH",
+    alt: "TRIUMPH motorcycle showroom campaign",
+    src: "/media/work/triumph-thumbnail.webp",
+    videoSrc: "/media/work/triumph-reel.mp4",
+    poster: "/media/work/triumph-thumbnail.webp",
+  },
+  {
+    title: "A&S",
+    alt: "A&S Furniture and Mattresses brand campaign",
+    src: "/media/work/as-thumbnail.webp",
+    videoSrc: "/media/work/as-reel.mp4",
+    poster: "/media/work/as-thumbnail.webp",
+  },
+  {
     title: "VEDIKA",
     alt: "VEDIKA campaign showreel",
     src: "/media/work/vedika-thumbnail.webp",
@@ -72,26 +100,11 @@ export const PROJECTS: ProjectItem[] = [
     poster: "/media/work/vedika-thumbnail.webp",
   },
   {
-    title: "VANTA",
-    alt: "VANTA performance marketing, 3.9x ROAS",
-    src: "/media/work/vanta.webp",
-  },
-  {
     title: "HARIAURA",
-    alt: "HARIAURA branding and creative, +62% brand engagement",
-    src: "/media/work/hariaura-thumbnail.jpg",
+    alt: "HARIAURA gems and jewellery brand campaign",
+    src: "/media/work/hariaura-thumbnail.webp",
     videoSrc: "/media/work/hariaura-reel.mp4",
-    poster: "/media/work/hariaura-thumbnail.jpg",
-  },
-  {
-    title: "NORTH",
-    alt: "NORTH social and content, 28M organic impressions",
-    src: "/media/work/north.webp",
-  },
-  {
-    title: "FORGE",
-    alt: "FORGE digital and performance, +117% conversion rate",
-    src: "/media/work/forge.webp",
+    poster: "/media/work/hariaura-thumbnail.webp",
   },
 ];
 
