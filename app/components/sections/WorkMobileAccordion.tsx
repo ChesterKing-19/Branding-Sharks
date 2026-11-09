@@ -18,6 +18,8 @@ export function WorkMobileAccordion() {
         image: p.src,
         label: p.title,
         alt: p.alt,
+        focal: p.focal,
+        focalStrip: p.focalStrip,
         videoSrc: p.videoSrc,
       })),
     []
@@ -37,7 +39,7 @@ export function WorkMobileAccordion() {
           trigger="click"
           defaultIndex={0}
           height={420}
-          gap={10}
+          gap={8}
           radius={16}
           expandRatio={0.6}
           accentColor="#a8c814"

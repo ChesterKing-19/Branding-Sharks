@@ -21,6 +21,14 @@ export interface ProjectItem {
   videoSrc?: string;
   /** Reel poster. Defaults to `src` when omitted. */
   poster?: string;
+  /**
+   * CSS `object-position` for the expanded card. Posters are 9:16 while a
+   * mobile card is landscape-ish, so each project nominates the band that
+   * keeps its logo and signage in frame.
+   */
+  focal?: string;
+  /** Crop anchor for the collapsed accordion strip (falls back to `focal`). */
+  focalStrip?: string;
 }
 
 export const CONTACT_EMAIL = "hello@brandingsharks.com" as const;
@@ -70,6 +78,7 @@ export const PROJECTS: ProjectItem[] = [
     src: "/media/work/alberta-thumbnail.webp",
     videoSrc: "/media/work/alberta-reel.mp4",
     poster: "/media/work/alberta-thumbnail.webp",
+    focal: "50% 9%",
   },
   {
     title: "TEMPLE GYM",
@@ -77,6 +86,8 @@ export const PROJECTS: ProjectItem[] = [
     src: "/media/work/templegym-thumbnail.webp",
     videoSrc: "/media/work/templegym-reel.mp4",
     poster: "/media/work/templegym-thumbnail.webp",
+    focal: "50% 8%",
+    focalStrip: "50% 100%",
   },
   {
     title: "TRIUMPH",
@@ -84,6 +95,8 @@ export const PROJECTS: ProjectItem[] = [
     src: "/media/work/triumph-thumbnail.webp",
     videoSrc: "/media/work/triumph-reel.mp4",
     poster: "/media/work/triumph-thumbnail.webp",
+    focal: "50% 45%",
+    focalStrip: "50% 52%",
   },
   {
     title: "A&S",
@@ -91,6 +104,8 @@ export const PROJECTS: ProjectItem[] = [
     src: "/media/work/as-thumbnail.webp",
     videoSrc: "/media/work/as-reel.mp4",
     poster: "/media/work/as-thumbnail.webp",
+    focal: "50% 33%",
+    focalStrip: "50% 15%",
   },
   {
     title: "VEDIKA",
@@ -98,6 +113,8 @@ export const PROJECTS: ProjectItem[] = [
     src: "/media/work/vedika-thumbnail.webp",
     videoSrc: "/media/work/vedika-reel.mp4",
     poster: "/media/work/vedika-thumbnail.webp",
+    focal: "50% 20%",
+    focalStrip: "50% 7%",
   },
   {
     title: "HARIAURA",
@@ -105,6 +122,7 @@ export const PROJECTS: ProjectItem[] = [
     src: "/media/work/hariaura-thumbnail.webp",
     videoSrc: "/media/work/hariaura-reel.mp4",
     poster: "/media/work/hariaura-thumbnail.webp",
+    focal: "50% 55%",
   },
 ];
 

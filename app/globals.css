@@ -311,6 +311,20 @@ h2 {
   color: #fff;
 }
 
+/* Reel open (desktop FlexCarouselReel + mobile WorkReelOverlay both set
+   body[data-reel-open]): blur the section content behind the player.
+   The player is portalled to body, so it stays crisp. Head and carousel
+   are targeted separately to keep the section's background edge sharp. */
+.work-head,
+.work-carousel {
+  transition: filter 320ms ease;
+}
+
+body[data-reel-open] .work-head,
+body[data-reel-open] .work-carousel {
+  filter: blur(12px);
+}
+
 /* Mobile accordion branch: vertical stack.
    Height is content-driven (AccordionGallery sets its own stacked height);
    side padding aligns panels with the section head. */
@@ -325,7 +339,7 @@ h2 {
    mount): same footprint as the stack stage so layout never jumps,
    calm pulse instead of a blank gap. */
 .work-carousel.work-carousel--loading {
-  height: clamp(520px, 78svh, 700px);
+  height: clamp(560px, 76svh, 720px);
   border-radius: 24px;
   background:
     radial-gradient(60% 50% at 50% 40%, rgba(168, 200, 20, 0.08), transparent 70%),
@@ -342,6 +356,12 @@ h2 {
 @media (prefers-reduced-motion: reduce) {
   .work-carousel.work-carousel--loading {
     animation: none;
+  }
+
+  /* Reel-open blur is a static effect, so keep it — just drop the fade. */
+  .work-head,
+  .work-carousel {
+    transition: none;
   }
 }
 

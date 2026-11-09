@@ -24,6 +24,14 @@ export interface AccordionGalleryItem {
   label?: string;
   link?: string;
   alt?: string;
+  /** CSS object-position for the expanded thumbnail crop. */
+  focal?: string;
+  /**
+   * CSS object-position while the panel is collapsed. Collapsed panels are
+   * short strips that sample the middle of a much taller media box, so the
+   * expanded crop is often wrong here; falls back to `focal`.
+   */
+  focalStrip?: string;
   /** Marks the panel as reel-backed; shows a play badge. */
   videoSrc?: string;
 }
@@ -248,12 +256,18 @@ const AccordionGallery = ({
       ref={rootRef}
       className={`accordion-gallery${vertical ? ' accordion-gallery--vertical' : ''}${className ? ` ${className}` : ''}`}
       style={rootStyle}
-      role="list"
-      aria-label="Image accordion gallery"
+      role="group"
+      aria-label="Selected work gallery"
     >
       {items.map((item, i) => {
         const isActive = i === active;
         const Tag = (item.link ? 'a' : 'div') as 'a';
+        // Crop anchors ride on the panel as custom properties so CSS can
+        // pick a different one per state (expanded card vs collapsed strip).
+        const cropStyle = {
+          '--ag-focal': item.focal,
+          '--ag-focal-strip': item.focalStrip
+        } as CSSProperties;
         return (
           <Tag
             key={i}
@@ -261,16 +275,25 @@ const AccordionGallery = ({
               panelRefs.current[i] = el;
             }}
             className={`ag-panel${isActive ? ' ag-panel--active' : ''}`}
-            style={{ borderRadius: `${radius}px`, flexGrow: isActive ? activeGrow : 1 }}
+            style={{
+              borderRadius: `${radius}px`,
+              flexGrow: isActive ? activeGrow : 1,
+              ...cropStyle
+            }}
             href={item.link || undefined}
             onClick={e => handleClick(i, e)}
             onMouseEnter={() => handleEnter(i)}
-            onFocus={() => setActive(i)}
+            // Pointer taps also fire focus; only keyboard focus should
+            // expand, otherwise the first tap lands on an already-active
+            // panel and opens the reel instead of just expanding.
+            onFocus={e => {
+              if (e.target instanceof HTMLElement && e.target.matches(':focus-visible')) setActive(i);
+            }}
             onKeyDown={e => handleKeyDown(i, e)}
-            role="listitem"
+            role={item.link ? undefined : 'button'}
             tabIndex={0}
-            aria-current={isActive ? 'true' : undefined}
-            aria-label={item.videoSrc ? `${item.label ?? item.alt ?? `Panel ${i + 1}`} (plays showreel)` : item.label}
+            aria-expanded={item.link ? undefined : isActive}
+            aria-label={`${item.label ?? item.alt ?? `Panel ${i + 1}`}${item.videoSrc ? ', plays showreel' : ''}`}
           >
             <span className="ag-panel__frame">
               <span
