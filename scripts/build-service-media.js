@@ -22,7 +22,7 @@ const SOURCE_DIR = path.join(ROOT, "media-src/services");
 const OUT_DIR = path.join(ROOT, "public/media/services");
 
 const SIZE = 512;
-const WEBP_QUALITY = 82;
+const WEBP_QUALITY = 88;
 const SOURCE_EXT = /\.(webp|png|jpe?g)$/i;
 
 const CROP = `scale=${SIZE}:${SIZE}:force_original_aspect_ratio=increase,crop=${SIZE}:${SIZE}`;

@@ -415,7 +415,10 @@ const InfiniteMenu = ({
       const request = ++atlas.request;
       const total = Math.max(1, list.length);
       atlas.cells = Math.ceil(Math.sqrt(total));
-      atlas.cell = clamp(Math.floor(4096 / atlas.cells), 64, 256);
+      // 512 px per tile matches what a tile actually occupies on screen at
+      // DPR 2; the atlas is budgeted at 2048² so larger item sets trade tile
+      // resolution instead of ballooning VRAM.
+      atlas.cell = clamp(Math.floor(2048 / atlas.cells), 64, 512);
       atlas.canvas.width = atlas.cells * atlas.cell;
       atlas.canvas.height = atlas.cells * atlas.cell;
       const ctx = atlas.canvas.getContext('2d');
