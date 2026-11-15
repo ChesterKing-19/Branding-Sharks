@@ -2,9 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
-import { BRAND_REEL, GALLERY_TILES } from "../../data/content";
+import {
+  BRAND_REEL,
+  GALLERY_PROJECTS,
+} from "../../data/content";
 
-const GALLERY_ITEMS: readonly string[] = GALLERY_TILES;
+// Loop files are named `<slug>-loop.mp4`; the slug gives CSS a stable hook for
+// the per-breakpoint ordering without touching the curated desktop order.
+const slugOf = (src: string) =>
+  (src.split("/").pop() ?? "").replace("-loop.mp4", "").toLowerCase();
+
+/**
+ * Project reels fill every cell of the 5×3 grid except the centre, which is
+ * reserved for the brand reel. The reel expands on scroll, settles into that
+ * cell, and stays there.
+ */
+const TILES = GALLERY_PROJECTS;
 
 export function Gallery() {
   const galleryPin = useRef<HTMLElement>(null);
@@ -20,7 +33,6 @@ export function Gallery() {
     // Respect reduced-motion: never autoplay the showreel.
     if (reduceMotion) {
       video.pause();
-      video.removeAttribute("autoplay");
       return;
     }
 
@@ -38,18 +50,91 @@ export function Gallery() {
     return () => observer.disconnect();
   }, [reduceMotion]);
 
+  // Tile loops: muted, non-interactive, and only playing while the gallery
+  // stage is on screen. Tiles hidden by the responsive cap are never loaded.
+  useEffect(() => {
+    const stageEl = stage.current;
+    if (!stageEl) return;
+
+    // Only tiles the layout actually renders (the mobile grid hides 6 of
+    // them) are ever loaded or decoded. `display` is available before the
+    // first layout pass, unlike measured widths.
+    const collect = () =>
+      Array.from(
+        stageEl.querySelectorAll<HTMLVideoElement>(".see-project-video")
+      ).filter((video) => {
+        const tile = video.closest<HTMLElement>(".see-project");
+        return !tile || getComputedStyle(tile).display !== "none";
+      });
+
+    let videos = collect();
+
+    if (reduceMotion) {
+      videos.forEach((video) => video.pause());
+      return;
+    }
+
+    let inView = false;
+    const playAll = () => {
+      if (document.hidden) return;
+      // Layout may not be measured on the first frame, so re-collect here.
+      videos = collect();
+      videos.forEach((video) => video.play().catch(() => {}));
+    };
+    const pauseAll = () => {
+      videos.forEach((video) => video.pause());
+    };
+
+    if (!("IntersectionObserver" in window)) {
+      playAll();
+      return pauseAll;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        inView = !!entries[0]?.isIntersecting;
+        if (inView) playAll();
+        else pauseAll();
+      },
+      { threshold: 0.05 }
+    );
+
+    const onVisibility = () => {
+      if (document.hidden) pauseAll();
+      else if (inView) playAll();
+    };
+
+    // Crossing the 800px breakpoint shows/hides tiles, so rebuild the pool.
+    const onResize = () => {
+      pauseAll();
+      videos = collect();
+      if (inView) playAll();
+    };
+
+    observer.observe(stageEl);
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("resize", onResize);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("resize", onResize);
+      pauseAll();
+    };
+    // Re-scan if the rendered tile set changes (breakpoint or data edits).
+  }, [reduceMotion, GALLERY_PROJECTS.length]);
+
   useEffect(() => {
     const el = galleryPin.current;
     const node = stage.current;
     if (!el || !node) return;
 
     let raf = 0;
-    const measureSlot = () => {
-      const slot = node.querySelector<HTMLElement>(".se-video-slot");
-      const w = slot ? slot.offsetWidth : 0;
-      const h = slot ? slot.offsetHeight : 0;
-      node.style.setProperty("--reel-final-w", w ? `${w}px` : "13.6vw");
-      node.style.setProperty("--reel-final-h", h ? `${h}px` : "31vw");
+    const measureReel = () => {
+      // The reel lands on the reserved centre cell, so measure that.
+      const slot = node.querySelector<HTMLElement>(".gallery-reel-slot");
+      if (!slot) return;
+      node.style.setProperty("--reel-final-w", `${slot.offsetWidth}px`);
+      node.style.setProperty("--reel-final-h", `${slot.offsetHeight}px`);
     };
     const update = () => {
       raf = 0;
@@ -63,14 +148,14 @@ export function Gallery() {
       if (!raf) raf = requestAnimationFrame(update);
     };
 
-    measureSlot();
+    measureReel();
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", measureSlot);
+    window.addEventListener("resize", measureReel);
     window.addEventListener("resize", update);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", measureSlot);
+      window.removeEventListener("resize", measureReel);
       window.removeEventListener("resize", update);
       if (raf) cancelAnimationFrame(raf);
     };
@@ -82,27 +167,37 @@ export function Gallery() {
         <h2 id="gallery-heading" className="sr-only">Selected work</h2>
 
         <div className="see-work-gallery">
-          {GALLERY_ITEMS.map((item, i) =>
-            item === "video" ? (
-              <article
-                className="see-project se-video-slot"
-                key={item}
-                style={{ "--tile": i } as React.CSSProperties}
+          {TILES.map((tile, i) => (
+            <article
+              className="see-project se-video-tile"
+              key={tile.videoSrc}
+              data-slug={slugOf(tile.videoSrc)}
+              aria-label={tile.title}
+              style={
+                {
+                  "--tile": i,
+                  "--tile-focal": tile.focal ?? "50% 50%",
+                } as React.CSSProperties
+              }
+            >
+              <video
+                className="see-project-video"
+                src={tile.videoSrc}
+                poster={tile.poster}
+                muted
+                loop
+                playsInline
+                preload="none"
+                tabIndex={-1}
                 aria-hidden="true"
+                disablePictureInPicture
               />
-            ) : (
-              <article
-                className={`see-project se-${item}`}
-                key={item}
-                style={{ "--tile": i } as React.CSSProperties}
-              >
-                <>
-                  <span>{String(i + 1).padStart(2, "0")} / {item.toUpperCase()}</span>
-                  <b>{item.toUpperCase()}</b>
-                </>
-              </article>
-            )
-          )}
+              <div className="see-project-scrim" aria-hidden="true" />
+            </article>
+          ))}
+
+          {/* Reserved centre cell; the reel overlay lands exactly here. */}
+          <div className="gallery-reel-slot" aria-hidden="true" />
         </div>
 
         <div className="reel-focus" role="img" aria-label="Brand film">
@@ -114,11 +209,10 @@ export function Gallery() {
             <video
               ref={videoRef}
               className="reel-video"
-              autoPlay={!reduceMotion}
               muted
-              loop={!reduceMotion}
+              loop
               playsInline
-              preload={reduceMotion ? "none" : "metadata"}
+              preload="metadata"
               src={BRAND_REEL.src}
               onError={() => setVideoError(true)}
               aria-label={BRAND_REEL.label}

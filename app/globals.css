@@ -570,6 +570,12 @@ button:focus-visible {
   animation: none;
 }
 
+/* Empty centre cell: the brand reel lands here and stays put. */
+.gallery-reel-slot {
+  grid-column: 3;
+  grid-row: 2;
+}
+
 .see-project {
   position: relative;
   width: auto;
@@ -591,115 +597,36 @@ button:focus-visible {
   animation-range: entry 6% cover 33%;
 }
 
-.see-project > span {
-  position: relative;
+/* --- video-backed gallery tiles --- */
+.se-video-tile {
+  background: #0c0d0c;
+  color: #f4f3ea;
+}
+
+.see-project-video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--tile-focal, 50% 50%);
+  pointer-events: none;
+  filter: saturate(0.85) contrast(1.05);
+}
+
+.see-project-scrim {
+  position: absolute;
+  inset: 0;
   z-index: 1;
-  font: 10px var(--font-dm-mono);
-  letter-spacing: 0.5px;
-  margin: 0;
-}
-
-.see-project > b {
-  position: relative;
-  z-index: 1;
-  font-size: clamp(1rem, 2vw, 2rem);
-  letter-spacing: -0.12em;
-  line-height: 0.8;
-  align-self: center;
-  text-align: center;
-}
-
-.see-project > span {
-  font-size: 8px;
-}
-
-.see-project:after {
-  transform: scale(0.72);
-}
-
-.se-nova {
-  background: linear-gradient(130deg, #e8e8df 0 45%, #789e1c 45% 52%, #223017 52%);
-  color: #172112;
-}
-
-.se-nova:after {
-  content: "";
-  position: absolute;
-  width: 90%;
-  height: 70%;
-  right: -23%;
-  bottom: -19%;
-  background: #b8df43;
-  clip-path: polygon(0 0, 100% 100%, 0 100%);
-}
-
-.se-aura {
-  background: linear-gradient(135deg, #ded1bf, #a74f42 49%, #efe6c7 49%);
-}
-
-.se-aura:after {
-  content: "A";
-  position: absolute;
-  font-size: 30rem;
-  line-height: 1;
-  right: -45px;
-  bottom: -145px;
-  color: #f8edcf;
-  opacity: 0.5;
-  font-weight: 800;
-}
-
-.se-north {
-  background: linear-gradient(120deg, #9bc6c7, #245b5e 52%, #eeeddd 52%);
-}
-
-.se-north:after {
-  content: "";
-  position: absolute;
-  inset: 23% -10% -20% 30%;
-  border: 3px solid #daf664;
-  border-radius: 50%;
-  transform: rotate(25deg);
-}
-
-.se-forge {
-  background: linear-gradient(140deg, #d6cdb9 0 46%, #d76b2d 46% 62%, #26231e 62%);
-}
-
-.se-kin {
-  background: linear-gradient(140deg, #213a2a, #aecb58 50%, #e6ecdb 50%);
-}
-
-.se-orbit {
-  background: linear-gradient(140deg, #e6ded0, #a7bdcf 50%, #1d334b 50%);
-}
-
-.se-lumen {
-  background: linear-gradient(140deg, #2e3030, #e0ddcb 48%, #90b527 48%);
-}
-
-.se-drift {
-  background: linear-gradient(145deg, #183c48, #5cabb1 48%, #e4d7bc 48%);
-}
-
-.se-pulse {
-  background: linear-gradient(145deg, #d9e4dc, #7da687 50%, #28443b 50%);
-}
-
-.se-tide {
-  background: linear-gradient(145deg, #e4d9c8, #b87c57 50%, #402d39 50%);
-}
-
-.se-echo {
-  background: linear-gradient(145deg, #292c38, #868aa9 50%, #d4d1bd 50%);
-}
-
-.se-flux {
-  background: linear-gradient(145deg, #d9c6da, #944f91 50%, #201d36 50%);
-}
-
-.se-current {
-  background: linear-gradient(145deg, #d7dfc8, #a5ba47 50%, #30421f 50%);
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0) 32%,
+    rgba(0, 0, 0, 0) 62%,
+    rgba(0, 0, 0, 0.62) 100%
+  );
 }
 
 @keyframes tile-reveal {
@@ -714,14 +641,7 @@ button:focus-visible {
   grid-template-rows: repeat(3, 1fr) !important;
 }
 
-.se-video-slot {
-  grid-column: 3 !important;
-  grid-row: 2 !important;
-  aspect-ratio: 4 / 5 !important;
-  visibility: hidden !important;
-}
-
-.see-work-gallery .see-project:not(.se-video-slot) {
+.see-work-gallery .see-project {
   --rp: calc((var(--gallery-progress, 0) - var(--row-lag, 0)) * var(--rp-scale, 1));
   opacity: clamp(0, calc(var(--rp) * 2.2222 - 1.2222), 1);
   transform: scale(clamp(0, calc(var(--rp) * 1.4286 - 0.4286), 1));
@@ -754,12 +674,6 @@ button:focus-visible {
   .see-project {
     animation: none !important;
   }
-}
-
-.se-video-slot {
-  grid-column: 3;
-  grid-row: 1 / span 2;
-  visibility: hidden;
 }
 
 /* Gallery on large screens: sticky stage + pinned video overlay. */
@@ -823,7 +737,6 @@ button:focus-visible {
     top: 50%;
     aspect-ratio: 16 / 9;
     transform: translate(-50%, -50%) scale(calc(1 - var(--gallery-progress) * 0.7));
-    opacity: calc(1 - max(0, (var(--gallery-progress) - 0.82) * 5));
     pointer-events: none;
     transition: opacity 0.06s linear;
     display: block;
@@ -866,14 +779,6 @@ button:focus-visible {
     height: 72px;
     aspect-ratio: auto;
     padding: 7px;
-  }
-
-  .see-project > b {
-    font-size: 10px;
-  }
-
-  .see-project > span {
-    display: none;
   }
 }
 
@@ -938,7 +843,6 @@ button:focus-visible {
     top: 50%;
     aspect-ratio: 16 / 9;
     transform: translate(-50%, -50%) scale(calc(1 - var(--gallery-progress) * 0.72));
-    opacity: calc(1 - max(0, (var(--gallery-progress) - 0.82) * 5));
     pointer-events: none;
     width: clamp(
       14vw,
@@ -972,16 +876,55 @@ button:focus-visible {
     padding: 0;
   }
 
-  .see-work-gallery .see-project:nth-child(n + 10) {
+  /* Phones show a curated eight around the reel — a different set and order
+     from the desktop wall. Hidden tiles never load or decode. */
+  .see-work-gallery .see-project[data-slug="podcast2"],
+  .see-work-gallery .see-project[data-slug="tap2cash"],
+  .see-work-gallery .see-project[data-slug="alberta"],
+  .see-work-gallery .see-project[data-slug="templegym"],
+  .see-work-gallery .see-project[data-slug="vedika"],
+  .see-work-gallery .see-project[data-slug="hariaura"] {
     display: none;
   }
 
-  .se-video-slot {
-    grid-column: 2 !important;
-    grid-row: 2 !important;
+  .see-work-gallery .see-project[data-slug="as"] {
+    order: 1;
   }
 
-  .see-project:not(.se-video-slot) {
+  .see-work-gallery .see-project[data-slug="cinnamonbliss"] {
+    order: 2;
+  }
+
+  .see-work-gallery .see-project[data-slug="northwok"] {
+    order: 3;
+  }
+
+  .see-work-gallery .see-project[data-slug="suyukti"] {
+    order: 4;
+  }
+
+  .see-work-gallery .see-project[data-slug="triumph"] {
+    order: 5;
+  }
+
+  .see-work-gallery .see-project[data-slug="roshan"] {
+    order: 6;
+  }
+
+  .see-work-gallery .see-project[data-slug="ibrs"] {
+    order: 7;
+  }
+
+  .see-work-gallery .see-project[data-slug="podcast"] {
+    order: 8;
+  }
+
+  .gallery-reel-slot {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .see-project {
     min-width: 0;
     min-height: 0;
     width: auto;
@@ -1001,6 +944,7 @@ button:focus-visible {
   height: calc(var(--reel-final-h, 31vw) + (100dvh - var(--reel-final-h, 31vw)) * (1 - var(--gallery-progress, 0))) !important;
   transform: translate(-50%, -50%) !important;
   transform-origin: 50% 50% !important;
+  /* The reel settles into the reserved centre cell and stays there. */
   opacity: 1 !important;
   border-radius: clamp(0px, calc(12% * var(--gallery-progress, 0)), 48px);
   overflow: hidden;

@@ -39,6 +39,21 @@ export function Services() {
           />
         </h2>
       </div>
+      {/*
+        The WebGL sphere only mounts the active service's title/description in
+        the DOM. This hidden list keeps the full service set crawlable and
+        readable to assistive tech without changing the visual design.
+      */}
+      <div className="sr-only">
+        <h3>Services</h3>
+        <ul>
+          {SERVICES.map(({ title, description }) => (
+            <li key={title}>
+              {title}: {description}
+            </li>
+          ))}
+        </ul>
+      </div>
       <div className="services-stage">
         <InfiniteMenu
           items={ITEMS}
