@@ -34,6 +34,7 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.1.18"],
   experimental: {
     optimizePackageImports: ["motion", "ogl"],
+    agentUpgrade: "security",
   },
   images: {
     formats: ["image/avif", "image/webp"],
