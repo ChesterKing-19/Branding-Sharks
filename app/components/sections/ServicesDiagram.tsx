@@ -212,7 +212,10 @@ export function ServicesDiagram() {
         const startY = hub.y + hub.h + 1;
         for (let i = 0; i < OUT_COUNT; i += 1) {
           const outcome = boxOf(outcomes[i], diagram);
-          const a = { x: hub.x + hub.w * 0.5, y: startY };
+          const a = {
+            x: hub.x + hub.w * (0.15 + (0.7 * i) / (OUT_COUNT - 1)),
+            y: startY,
+          };
           const b = { x: outcome.x + outcome.w / 2, y: outcome.y - 1 };
           const run = b.y - a.y;
           draw(

@@ -265,6 +265,54 @@
   }
 }
 
+/* Phone layout: the reference's widening diamond of portraits. The wider
+   compact range (640–839px) keeps the flat grid above. */
+@media (max-width: 639px) {
+  .services-diagram__outcomes {
+    --circle: clamp(33px, 10.5vw, 52px);
+    grid-template-rows: repeat(4, calc(var(--circle) * 1.25));
+    align-items: center;
+    column-gap: 0;
+    row-gap: 3px;
+  }
+
+  .services-diagram__outcome {
+    width: var(--circle);
+  }
+
+  .services-diagram__outcome:nth-child(1) { grid-area: 2 / 2; }
+  .services-diagram__outcome:nth-child(2) { grid-area: 3 / 1; }
+  .services-diagram__outcome:nth-child(3) { grid-area: 4 / 1; }
+  .services-diagram__outcome:nth-child(4) { grid-area: 1 / 3; }
+  .services-diagram__outcome:nth-child(5) { grid-area: 3 / 3; }
+  .services-diagram__outcome:nth-child(6) { grid-area: 4 / 3; }
+  .services-diagram__outcome:nth-child(7) { grid-area: 2 / 4; }
+  .services-diagram__outcome:nth-child(8) { grid-area: 3 / 5; }
+  .services-diagram__outcome:nth-child(9) { grid-area: 4 / 5; }
+
+  .services-diagram__outcome:nth-child(5),
+  .services-diagram__outcome:nth-child(6) {
+    width: calc(var(--circle) * 1.18);
+  }
+}
+
+/* Wide compact: the 4:3 panel is short, so keep the flat grid tighter. */
+@media (min-width: 640px) and (max-width: 839px) {
+  .services-diagram__service {
+    height: 30px;
+    font-size: 10px;
+  }
+
+  .services-diagram__hub {
+    width: 92px;
+    border-radius: 16px;
+  }
+
+  .services-diagram__outcome {
+    width: 50px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .services-diagram__service,
   .services-diagram__outcome,

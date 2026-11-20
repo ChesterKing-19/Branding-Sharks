@@ -244,10 +244,10 @@ h2 {
   }
 }
 
-/* Smallest phones: same tall panel, just tighter gutters. */
+/* Smallest phones: taller panel so the four-circle diamond fits. */
 @media (max-width: 379px) {
   .services-panel {
-    padding: 0;
+    aspect-ratio: 5 / 9;
   }
 }
 
