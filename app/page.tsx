@@ -3,7 +3,6 @@ import { Header } from "./components/sections/Header";
 import { Hero } from "./components/sections/Hero";
 import { Gallery } from "./components/sections/Gallery";
 import { About } from "./components/sections/About";
-import { Testimonial } from "./components/sections/Testimonial";
 import { FinalCTA } from "./components/sections/FinalCTA";
 import { Footer } from "./components/sections/Footer";
 import ScrollToTopButton from "./components/ui/ScrollToTopButton";
@@ -27,9 +26,12 @@ const Services = dynamic(
         aria-busy="true"
       >
         <div className="services-head">
-          <h2>WHAT WE DO.</h2>
+          <p className="services-eyebrow">Our services</p>
+          <h2 className="services-title">
+            What we <em>do.</em>
+          </h2>
         </div>
-        <div className="services-stage" aria-hidden="true" />
+        <div className="services-panel" aria-hidden="true" />
       </section>
     ),
   }
@@ -86,7 +88,6 @@ export default function Home() {
         <About />
         <Services />
         <Work />
-        <Testimonial />
         <FinalCTA />
       </main>
       <Footer />

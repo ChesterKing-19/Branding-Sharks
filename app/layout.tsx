@@ -4,7 +4,6 @@ import {
   DM_Mono,
   DM_Serif_Display,
   Bodoni_Moda,
-  Allura,
 } from "next/font/google";
 import "./globals.css";
 
@@ -35,14 +34,6 @@ const bodoniModa = Bodoni_Moda({
   preload: false,
 });
 
-const allura = Allura({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-allura",
-  display: "swap",
-  preload: false,
-});
-
 export const metadata: Metadata = {
   title: "Branding Sharks — Marketing & Advertising Agency",
   description:
@@ -64,7 +55,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${dmMono.variable} ${dmSerif.variable} ${bodoniModa.variable} ${allura.variable}`}
+      className={`${manrope.variable} ${dmMono.variable} ${dmSerif.variable} ${bodoniModa.variable}`}
     >
       <body>{children}</body>
     </html>

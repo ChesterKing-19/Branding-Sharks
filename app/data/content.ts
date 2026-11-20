@@ -10,6 +10,8 @@ export interface ServiceItem {
   title: string;
   description: string;
   image: string;
+  /** Compact pill label for the services diagram (falls back to `title`). */
+  short?: string;
 }
 
 export interface ProjectItem {
@@ -54,54 +56,134 @@ export const BRAND_REEL = {
 export const SERVICES: ServiceItem[] = [
   {
     title: "Brand Strategy",
+    short: "Strategy",
     description: "Find the position your brand can own — then build everything from it.",
     image: "/media/services/brand-strategy.webp",
   },
   {
     title: "Branding",
+    short: "Branding",
     description: "Identity systems that stay sharp long after launch day.",
     image: "/media/services/branding.webp",
   },
   {
     title: "Creative",
+    short: "Creative",
     description: "Ideas and art direction built to be noticed, not scrolled past.",
     image: "/media/services/creative.webp",
   },
   {
     title: "Performance Marketing",
+    short: "Performance",
     description: "Media, measurement and creative testing that turn demand into revenue.",
     image: "/media/services/performance-marketing.webp",
   },
   {
     title: "Social Media",
+    short: "Social",
     description: "Always-on social that gives your brand its own momentum.",
     image: "/media/services/social-media.webp",
   },
   {
     title: "Content",
+    short: "Content",
     description: "Stories and assets made for the feed, the site and the sale.",
     image: "/media/services/content.webp",
   },
   {
     title: "SEO",
+    short: "SEO",
     description: "Search visibility built for how people actually discover now.",
     image: "/media/services/seo.webp",
   },
   {
     title: "Web Design & Development",
+    short: "Web Design",
     description: "Digital flagships that load fast, read clear and convert.",
     image: "/media/services/web-design-development.webp",
   },
   {
     title: "Lead Generation",
+    short: "Lead Gen",
     description: "Demand systems that turn interest into qualified pipeline.",
     image: "/media/services/lead-generation.webp",
   },
   {
     title: "Email & CRM",
+    short: "Email & CRM",
     description: "Lifecycle moments that bring customers back and keep them.",
     image: "/media/services/email-crm.webp",
   },
+];
+
+/**
+ * What the services add up to. Rendered as the lime outcome pills on the
+ * right-hand side of the services diagram.
+ */
+export const SERVICE_OUTCOMES = [
+  "Positioning",
+  "Demand",
+  "Conversion",
+  "Retention",
+  "Growth",
+] as const;
+
+/**
+ * Beat-for-beast content from the reference motion graphic. Coordinates are
+ * in the reference frame's 1920 x 676 space (square pixels), used by the
+ * clone layout. Kept alongside the site's own service data, not replacing it.
+ */
+export type ReferenceService = {
+  label: string;
+  color: string;
+  ink: string;
+  thumb?: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+};
+
+export const REFERENCE_SERVICES: ReferenceService[] = [
+  { label: "Ad Creative", color: "#c9e86b", ink: "#162008", thumb: "/media/reference/thumb-ad-creative.webp", x: 33, y: 100, w: 271, h: 67 },
+  { label: "Social Assets", color: "#d8eafb", ink: "#1b2c3b", x: 318, y: 100, w: 192, h: 67 },
+  { label: "Video Production", color: "#2c2430", ink: "#d9aadb", x: 520, y: 100, w: 248, h: 67 },
+  { label: "Photography", color: "#eae9dd", ink: "#1d1d18", thumb: "/media/reference/thumb-photography.webp", x: 32, y: 176, w: 288, h: 64 },
+  { label: "Motion Graphics", color: "#efe0cf", ink: "#22201c", thumb: "/media/reference/thumb-motion-graphics.webp", x: 330, y: 178, w: 326, h: 62 },
+  { label: "Presentations", color: "#0e3324", ink: "#a9d66a", x: 660, y: 178, w: 212, h: 62 },
+  { label: "Web & UI Design", color: "#cbe86e", ink: "#1d240c", x: 32, y: 252, w: 236, h: 64 },
+  { label: "OOH & Fake OOH", color: "#123a32", ink: "#7fc8a0", x: 270, y: 252, w: 245, h: 64 },
+  { label: "Illustration", color: "#d8eafb", ink: "#24374a", x: 520, y: 252, w: 180, h: 64 },
+  { label: "Email Design", color: "#123a45", ink: "#cfe6ea", thumb: "/media/reference/thumb-email-design.webp", x: 31, y: 332, w: 286, h: 64 },
+  { label: "Brand Strategy", color: "#eee6da", ink: "#2b251f", x: 325, y: 332, w: 221, h: 64 },
+  { label: "3D Design", color: "#143a2c", ink: "#9ad9a5", thumb: "/media/reference/thumb-3d-design.webp", x: 548, y: 332, w: 270, h: 64 },
+  { label: "Copywriting", color: "#f0e4de", ink: "#4a2f2a", x: 28, y: 410, w: 188, h: 65 },
+  { label: "AI Consulting", color: "#2b2429", ink: "#f0a0a8", x: 224, y: 410, w: 201, h: 65 },
+  { label: "Campaign Development", color: "#c9e86b", ink: "#25300f", x: 428, y: 410, w: 324, h: 65 },
+  { label: "AI Enhanced Creative", color: "#d8eafb", ink: "#22374a", thumb: "/media/reference/thumb-ai-enhanced.webp", x: 26, y: 490, w: 379, h: 65 },
+  { label: "...and more", color: "#e5e8d9", ink: "#3a4030", x: 414, y: 490, w: 184, h: 65 },
+];
+
+export type ReferenceOutcome = {
+  label: string;
+  color: string;
+  ink: string;
+  image: string;
+  x: number;
+  y: number;
+  size: number;
+};
+
+export const REFERENCE_OUTCOMES: ReferenceOutcome[] = [
+  { label: "Performance", color: "#e9e6d8", ink: "#22201c", image: "/media/reference/portrait-performance.webp", x: 1380, y: 137, size: 116 },
+  { label: "Product mkt.", color: "#a9e86a", ink: "#14200a", image: "/media/reference/portrait-product-mkt.webp", x: 1610, y: 132, size: 100 },
+  { label: "Content", color: "#2b2429", ink: "#f0c8d0", image: "/media/reference/portrait-content.webp", x: 1798, y: 92, size: 140 },
+  { label: "Comms", color: "#3a2a4a", ink: "#e6c8f0", image: "/media/reference/portrait-comms.webp", x: 1320, y: 305, size: 95 },
+  { label: "Social", color: "#f0a8d0", ink: "#2a1220", image: "/media/reference/portrait-social.webp", x: 1518, y: 310, size: 140 },
+  { label: "Brand & Creative", color: "#d8eafb", ink: "#1b2b3a", image: "/media/reference/portrait-brand-creative.webp", x: 1758, y: 297, size: 152 },
+  { label: "Demand gen", color: "#d8eafb", ink: "#1b2b3a", image: "/media/reference/portrait-demand-gen.webp", x: 1384, y: 472, size: 110 },
+  { label: "Events", color: "#c9e86b", ink: "#1d270d", image: "/media/reference/portrait-events.webp", x: 1608, y: 520, size: 110 },
+  { label: "Campaigns", color: "#17402c", ink: "#d9f0d0", image: "/media/reference/portrait-campaigns.webp", x: 1806, y: 540, size: 140 },
 ];
 
 export const PROJECTS: ProjectItem[] = [
@@ -272,15 +354,3 @@ export const GALLERY_PROJECTS: GalleryItem[] = [
   },
 ];
 
-export const BRAND_NAMES = [
-  "NOVA",
-  "VERTEX",
-  "ORBIT",
-  "LUMEN",
-  "AURA",
-  "MONUMENT",
-  "NORTH",
-  "KIN",
-  "FORGE",
-  "VANTA",
-] as const;

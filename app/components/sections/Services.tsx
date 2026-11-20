@@ -1,68 +1,67 @@
-"use client";
+import { ServicesDiagram } from "./ServicesDiagram";
+import { ServicesHeading } from "./ServicesHeading";
 
-import InfiniteMenu from "../effects/InfiniteMenu";
-import SplitFlapText from "../effects/SplitFlapText";
-import { SERVICES } from "../../data/content";
+/* ============================================================
+   LEGACY SERVICES — kept on disk for rollback. Do not delete.
 
-const ITEMS = SERVICES.map(({ title, description, image }) => ({
-  image,
-  link: "",
-  title,
-  description,
-}));
+   The section used to be a WebGL sphere (InfiniteMenu) behind a
+   SplitFlapText heading. To restore it:
+
+     1. Uncomment the InfiniteMenu import and the ITEMS map below.
+     2. Replace the <ServicesDiagram /> line in the return with the
+        commented-out legacy JSX at the bottom of this file.
+     3. Uncomment the `.services*` / `.services-stage` rules in
+        app/globals.css (marked LEGACY SERVICES).
+
+   The old component files are untouched:
+     app/components/effects/InfiniteMenu.tsx  + .css
+     app/components/effects/SplitFlapText.tsx + .css
+   ============================================================ */
+// import InfiniteMenu from "../effects/InfiniteMenu";
+// import { SERVICES } from "../../data/content";
+//
+// const ITEMS = SERVICES.map(({ title, description, image }) => ({
+//   image,
+//   link: "",
+//   title,
+//   description,
+// }));
 
 export function Services() {
   return (
-    <section className="services section" id="services">
+    <section
+      className="services section"
+      id="services"
+      aria-labelledby="services-title"
+    >
       <div className="services-head">
-        <h2>
-          <SplitFlapText
-            className="services-flap"
-            words={[
-              "WHAT WE DO.",
-            ]}
-            flipDuration={0.12}
-            stagger={0.06}
-            cycleDelay={2400}
-            charset="alphanumeric"
-            flipsPerChar={8}
-            tileColor="#111827"
-            textColor="#f8fafc"
-            tileRadius={8}
-            gap={6}
-            fontSize="clamp(1.5rem, 5.2vw, 5rem)"
-            loop
-            padTo={12}
-            startOnView
-            highlight={{ phrase: "WHAT WE DO.", from: 8, to: 10 }}
-            highlightColor="#a8c814"
-          />
-        </h2>
+        <p className="services-eyebrow">Our services</p>
+        <ServicesHeading />
       </div>
+      <ServicesDiagram />
       {/*
-        The WebGL sphere only mounts the active service's title/description in
-        the DOM. This hidden list keeps the full service set crawlable and
-        readable to assistive tech without changing the visual design.
+        LEGACY JSX — restore together with the imports above.
+
+        <div className="sr-only">
+          <h3>Services</h3>
+          <ul>
+            {SERVICES.map(({ title, description }) => (
+              <li key={title}>
+                {title}: {description}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="services-stage">
+          <InfiniteMenu
+            items={ITEMS}
+            roundness={1}
+            backgroundColor="#000"
+            theme="dark"
+            accentColor="#a8c814"
+          />
+        </div>
       */}
-      <div className="sr-only">
-        <h3>Services</h3>
-        <ul>
-          {SERVICES.map(({ title, description }) => (
-            <li key={title}>
-              {title}: {description}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="services-stage">
-        <InfiniteMenu
-          items={ITEMS}
-          roundness={1}
-          backgroundColor="#000"
-          theme="dark"
-          accentColor="#a8c814"
-        />
-      </div>
     </section>
   );
 }

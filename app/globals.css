@@ -169,6 +169,92 @@ h2 {
   padding-bottom: 4px;
 }
 
+/* --- services (base geometry; diagram internals live in
+   components/sections/Services.css). Kept in globals so the dynamic()
+   loading skeleton in page.tsx is already styled, no flash or CLS. --- */
+.services {
+  background: #000;
+  color: #fff;
+  padding: clamp(96px, 12vw, 208px) 7vw clamp(72px, 8vw, 88px);
+}
+
+.services-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 1.4vw, 22px);
+  text-align: center;
+}
+
+.services-eyebrow {
+  margin: 0;
+  color: var(--lime);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.services-title {
+  margin: 0;
+  max-width: none;
+  font-family: var(--font-manrope), Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.services-title em {
+  font-family: var(--font-dm-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--lime);
+  letter-spacing: -0.01em;
+}
+
+.services-title .split-flap-text {
+  font-family: var(--font-manrope), Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.services-panel {
+  position: relative;
+  width: 100%;
+  margin-top: clamp(40px, 5vw, 80px);
+  aspect-ratio: 1920 / 676;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #070806;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 839px) {
+  .services-panel {
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 639px) {
+  .services-panel {
+    aspect-ratio: 3 / 5;
+  }
+}
+
+/* Smallest phones: same tall panel, just tighter gutters. */
+@media (max-width: 379px) {
+  .services-panel {
+    padding: 0;
+  }
+}
+
+/* ============================================================
+   LEGACY SERVICES — kept for rollback (see sections/Services.tsx).
+   Uncomment to restore the WebGL sphere stage.
+
 .services-head {
   margin: 0;
   text-align: left;
@@ -179,7 +265,6 @@ h2 {
   max-width: none;
 }
 
-/* --- services stage --- */
 .services {
   background: #000;
 }
@@ -189,6 +274,7 @@ h2 {
   position: relative;
   margin-top: 55px;
 }
+   ============================================================ */
 
 /* --- intro / about --- */
 .intro {
@@ -239,34 +325,6 @@ h2 {
   width: 46%;
   font-size: 13px;
   line-height: 1.5;
-}
-
-.brands {
-  padding: 26px 0 80px;
-  overflow: hidden;
-}
-
-.brands .eyebrow {
-  padding-left: 7vw;
-}
-
-.brand-track {
-  font-size: clamp(1.7rem, 3.5vw, 4rem);
-  letter-spacing: -0.07em;
-  white-space: nowrap;
-  color: #9aa0a2;
-  animation: marquee 32s linear infinite;
-}
-
-.brand-track b {
-  color: var(--ink);
-  margin: 0 30px;
-}
-
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
 }
 
 /* --- work --- */
@@ -365,39 +423,6 @@ body[data-reel-open] .work-carousel {
   }
 }
 
-/* --- quote --- */
-.quote {
-  padding: 120px 12vw;
-  background: var(--paper);
-  color: var(--ink);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-
-.quote .eyebrow {
-  color: var(--green-deep);
-}
-
-.quote blockquote {
-  font-family: var(--font-allura), cursive;
-  font-weight: 400;
-  font-size: clamp(2.3rem, 5.2vw, 6rem);
-  line-height: 1.12;
-  letter-spacing: 0;
-  margin: 42px 0;
-}
-
-.quote div {
-  font-size: 12px;
-  display: flex;
-  gap: 25px;
-  color: #5f6363;
-}
-
-.quote div span:last-child {
-  color: var(--green-deep);
-}
-
 /* --- final CTA --- */
 .final-cta {
   min-height: 90svh;
@@ -473,9 +498,8 @@ button:focus-visible {
     padding: 82px 22px;
   }
 
-  .services-head {
-    margin: 0 -22px;
-    padding: 0 8px;
+  .services {
+    padding: 82px 22px 64px;
   }
 
   .intro {
@@ -485,12 +509,6 @@ button:focus-visible {
 
   .intro-image {
     min-height: 390px;
-  }
-
-  .services-stage {
-    height: calc(100vh - 260px);
-    height: calc(100svh - 260px);
-    min-height: 400px;
   }
 
   .work {
@@ -508,10 +526,6 @@ button:focus-visible {
 
   .work-carousel {
     height: clamp(520px, 82vh, 800px);
-  }
-
-  .quote {
-    padding: 82px 22px;
   }
 
   .final-cta {
@@ -539,10 +553,6 @@ button:focus-visible {
   *:after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
-  }
-
-  .brand-track {
-    animation: none;
   }
 }
 

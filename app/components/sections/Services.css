@@ -1,0 +1,282 @@
+/* ============================================================
+   Services — reference-motion clone
+   Black panel and the Branding Sharks logo are retained; everything
+   else follows the reference graphic: pastel service pills, portrait
+   outcomes, bright lime band, snap-in / scatter-out 11.5s loop.
+
+   Desktop positions use reference-frame units (1920 x 676) through
+   container query units so the composition scales as one piece.
+   ============================================================ */
+
+.services-diagram {
+  --hub-zoom: 2.6;
+  container-type: inline-size;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(8px, 2.4vw, 18px);
+  padding: clamp(12px, 3.4vw, 22px) clamp(12px, 3.4vw, 22px) 26px;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Bright horizontal lime band — the reference's light canvas translated
+   to the site's black palette. */
+.services-diagram__glow {
+  position: absolute;
+  inset: -8% -4%;
+  pointer-events: none;
+  filter: blur(16px);
+  background:
+    radial-gradient(
+      ellipse 44% 34% at 50% 50%,
+      rgba(196, 244, 72, 0.3),
+      rgba(168, 200, 20, 0.1) 46%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 62% 15% at 50% 50%,
+      rgba(206, 250, 84, 0.22),
+      transparent 74%
+    );
+}
+
+.services-diagram__arrows {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* The reference lines are all but invisible; the heads and the glow carry
+   the direction. */
+.services-diagram__arrow-line {
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  vector-effect: non-scaling-stroke;
+}
+
+.services-diagram__arrow-head {
+  fill: var(--lime);
+  stroke: none;
+}
+
+.services-diagram__node {
+  fill: var(--lime);
+}
+
+/* A single short dash travelling from source to target; quiet enough to feel
+   like motion in the line rather than a separate marker. */
+.services-diagram__flow {
+  fill: none;
+  stroke: rgba(214, 255, 96, 0.34);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-dasharray: 0.035 0.965;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---- pastel service pills ---- */
+.services-diagram__cluster {
+  order: 1;
+  position: relative;
+  z-index: 2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(4px, 1vw, 7px);
+}
+
+.services-diagram__service {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  height: clamp(26px, 6.4vw, 32px);
+  padding: 0 6px;
+  border-radius: 7px;
+  background: var(--pill-bg);
+  color: var(--pill-ink);
+  font-size: clamp(7.5px, 1.9vw, 9.5px);
+  font-weight: 650;
+  white-space: nowrap;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.32);
+}
+
+.services-diagram__service img {
+  flex: 0 0 auto;
+  width: clamp(14px, 3.6vw, 20px);
+  height: 100%;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.services-diagram__service span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- hub (logo retained from the site) ---- */
+.services-diagram__hub-anchor {
+  order: 2;
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+}
+
+.services-diagram__hub {
+  display: grid;
+  place-items: center;
+  width: clamp(84px, 22vw, 112px);
+  aspect-ratio: 1;
+  border-radius: 18px;
+  background: linear-gradient(155deg, #10150c 0%, #070906 100%);
+  border: 1px solid rgba(168, 200, 20, 0.22);
+  box-shadow: 0 0 46px rgba(168, 200, 20, 0.24);
+  transform-origin: 50% 50%;
+}
+
+.services-diagram__hub img {
+  width: 82%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ---- portrait outcomes ---- */
+.services-diagram__outcomes {
+  order: 3;
+  position: relative;
+  z-index: 2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  justify-items: center;
+  gap: clamp(6px, 1.6vw, 12px);
+}
+
+.services-diagram__outcome {
+  position: relative;
+  width: clamp(48px, 12vw, 68px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+.services-diagram__outcome img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.services-diagram__outcome span {
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  translate: -50% 0;
+  padding: 1px 4px;
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--chip-ink);
+  font-size: clamp(6.5px, 1.5vw, 8.5px);
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   Landscape — exact reference composition, scaled by panel width
+   ============================================================ */
+@media (min-width: 840px) {
+  .services-diagram {
+    display: block;
+    padding: 0;
+  }
+
+  .services-diagram__cluster {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  .services-diagram__service {
+    position: absolute;
+    left: calc(var(--sx) * 0.052083cqw);
+    top: calc(50% + (var(--sy) - 338) * 0.052083cqw);
+    width: calc(var(--sw) * 0.052083cqw);
+    height: calc(var(--sh) * 0.052083cqw);
+    padding: 0 calc(13 * 0.052083cqw);
+    gap: calc(10 * 0.052083cqw);
+    border-radius: calc(16 * 0.052083cqw);
+    font-size: clamp(9px, 0.75cqw, 13px);
+  }
+
+  .services-diagram__service img {
+    width: calc(62 * 0.052083cqw);
+    border-radius: calc(12 * 0.052083cqw);
+  }
+
+  .services-diagram__hub-anchor {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .services-diagram__hub {
+    width: calc(178 * 0.052083cqw);
+    border-radius: calc(34 * 0.052083cqw);
+    pointer-events: auto;
+  }
+
+  .services-diagram__outcomes {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  .services-diagram__outcome {
+    position: absolute;
+    left: calc((var(--ox) - var(--os) / 2) * 0.052083cqw);
+    top: calc(50% + (var(--oy) - var(--os) / 2 - 338) * 0.052083cqw);
+    width: calc(var(--os) * 0.052083cqw);
+    height: calc(var(--os) * 0.052083cqw);
+  }
+
+  .services-diagram__outcome span {
+    bottom: calc(-11 * 0.052083cqw);
+    padding: calc(4 * 0.052083cqw) calc(12 * 0.052083cqw);
+    font-size: clamp(8px, 0.62cqw, 11px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .services-diagram__service,
+  .services-diagram__outcome,
+  .services-diagram__arrow-line,
+  .services-diagram__arrow-head,
+  .services-diagram__node {
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .services-diagram__flow {
+    display: none;
+  }
+}
