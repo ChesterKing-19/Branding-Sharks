@@ -30,7 +30,7 @@ export function ServicesHeading() {
         textColor="#f2f5e8"
         highlightColor="#a8c814"
         highlight={{ phrase: "WHAT WE DO.", from: 8, to: 10 }}
-        fontSize="clamp(2.5rem, 5vw, 4.5rem)"
+        fontSize="clamp(2rem, 4vw, 3.5rem)"
         flipDuration={0.1}
         stagger={0.05}
         flipsPerChar={7}

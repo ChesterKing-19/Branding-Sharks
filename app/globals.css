@@ -220,6 +220,20 @@ h2 {
   letter-spacing: -0.02em;
 }
 
+/* Tiles were sized for the component's monospace default. Manrope's glyphs
+   are wider (W ≈ 0.96em), so give each equal flap enough room. */
+.services-title .split-flap-text.services-flap .split-flap-text__tile {
+  width: 1.06em;
+}
+
+@media (max-width: 800px) {
+  .services-title .split-flap-text.services-flap {
+    font-size: clamp(1.25rem, 6.5vw, 1.75rem);
+    gap: 2px;
+    letter-spacing: 0;
+  }
+}
+
 .services-panel {
   position: relative;
   width: 100%;
